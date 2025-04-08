@@ -23,10 +23,12 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
       // In a real implementation, you would show a dialog to select a shipment
       const demoShipmentCode = "SHIP-001";
       await dockInVehicle(dockId, demoShipmentCode);
+      toast.success(`Vehicle docked in successfully`);
       // Trigger a refresh of the dock door data
       // You would typically use React Query to handle this
     } catch (error) {
       console.error("Error docking in vehicle:", error);
+      toast.error("Failed to dock in vehicle");
     } finally {
       setIsLoading(false);
     }
@@ -41,9 +43,11 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
     try {
       setIsLoading(true);
       await dockOutVehicle(dockId, assignedTruck);
+      toast.success(`Vehicle docked out successfully`);
       // Trigger a refresh of the dock door data
     } catch (error) {
       console.error("Error docking out vehicle:", error);
+      toast.error("Failed to dock out vehicle");
     } finally {
       setIsLoading(false);
     }
@@ -58,35 +62,32 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
         </div>
       )}
       
-      <div className="flex justify-between gap-2">
+      <div className="flex gap-2">
         {status === "Available" ? (
           <Button 
-            className="w-full" 
-            variant="outline"
+            className="flex-1" 
             onClick={handleDockIn}
             disabled={isLoading}
           >
             Dock In
           </Button>
-        ) : status === "Occupied" ? (
+        ) : null}
+        
+        {status === "Occupied" ? (
           <Button 
-            className="w-full" 
-            variant="outline" 
+            className="flex-1" 
             onClick={handleDockOut}
             disabled={isLoading}
           >
             Dock Out
           </Button>
-        ) : (
-          <Button className="w-full" variant="outline" disabled>
+        ) : null}
+        
+        {status === "Maintenance" && (
+          <Button className="flex-1" disabled>
             Under Maintenance
           </Button>
         )}
-        
-        {/* Add Block Dock button - this functionality already exists */}
-        <Button className="w-full" variant="secondary">
-          Block Dock
-        </Button>
       </div>
     </div>
   );

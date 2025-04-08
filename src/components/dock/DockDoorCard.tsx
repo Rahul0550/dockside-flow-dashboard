@@ -5,6 +5,8 @@ import { DockCardContent } from "./DockCardContent";
 import { DockCardFooter } from "./DockCardFooter";
 import { Card } from "../ui/card";
 import { DockDoor } from "@/lib/data";
+import { blockDock } from "@/lib/supabase/dockOperations";
+import { toast } from "sonner";
 
 export interface DockDoorCardProps {
   id?: string;
@@ -37,6 +39,7 @@ export function DockDoorCard({
   
   // Track blocked status
   const [isBlocked, setIsBlocked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const getDisplayName = () => {
     return dockName || `Dock ${dockId}`;
@@ -47,8 +50,25 @@ export function DockDoorCard({
     return dockStatus;
   };
   
-  const handleBlockRequest = () => {
-    setIsBlocked(prev => !prev);
+  const handleBlockRequest = async () => {
+    try {
+      setIsLoading(true);
+      // Update isBlocked state immediately for UI feedback
+      const newBlockedState = !isBlocked;
+      setIsBlocked(newBlockedState);
+      
+      // Call the blockDock API function
+      await blockDock(dockId, newBlockedState);
+      
+      toast.success(`Dock ${newBlockedState ? 'blocked' : 'unblocked'} successfully`);
+    } catch (error) {
+      console.error("Error blocking/unblocking dock:", error);
+      toast.error(`Failed to ${isBlocked ? 'unblock' : 'block'} dock`);
+      // Revert the state if the API call failed
+      setIsBlocked(!isBlocked);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
