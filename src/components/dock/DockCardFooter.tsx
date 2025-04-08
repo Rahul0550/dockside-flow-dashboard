@@ -34,10 +34,6 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
   };
 
   const handleDockOut = async () => {
-    if (!assignedTruck) {
-      toast.error("No vehicle assigned to this dock");
-      return;
-    }
 
     try {
       setIsLoading(true);
