@@ -140,7 +140,7 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
       >
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-bold">{dock.name}</CardTitle>
+            <CardTitle className="text-lg font-bold">{dock.dock_name}</CardTitle>
             <div className="flex items-center gap-2">
               <span className={getStatusBadge(dock.status)}>{statusLabel}</span>
               <ContextMenu>
