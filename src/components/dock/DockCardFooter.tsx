@@ -34,10 +34,10 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
   };
 
   const handleDockOut = async () => {
-
     try {
       setIsLoading(true);
-      await dockOutVehicle(dockId, assignedTruck);
+      // The updated dockOutVehicle can now find the assigned shipment by itself
+      await dockOutVehicle(dockId);
       // Refresh data through React Query
       queryClient.invalidateQueries({ queryKey: ['dockDoors'] });
       queryClient.invalidateQueries({ queryKey: ['trucks'] });

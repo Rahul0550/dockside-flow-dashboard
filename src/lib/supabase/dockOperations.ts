@@ -96,9 +96,9 @@ export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
 /**
  * Dock out a vehicle from a dock door
  */
-export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
+export const dockOutVehicle = async (dockId: string, shipmentCode?: string) => {
   try {
-    // First, verify the dock is currently OCCUPIED and has the correct shipment assigned
+    // First, verify the dock is currently OCCUPIED
     const { data: dockData, error: dockCheckError } = await supabase
       .from('dock_master')
       .select('status')
@@ -115,6 +115,29 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
     if (normalizedStatus !== 'occupied') {
       toast.error(`Dock is not occupied. Current status: ${dockData.status}`);
       throw new Error(`Dock is not occupied. Current status: ${dockData.status}`);
+    }
+    
+    // If shipment code is not provided, find the currently assigned shipment for this dock
+    if (!shipmentCode) {
+      const { data: currentShipment, error: shipmentFetchError } = await supabase
+        .from('shipment')
+        .select('shipment_code')
+        .eq('dockdoor_assigned', dockId)
+        .is('dock_out_time', null)
+        .maybeSingle();
+        
+      if (shipmentFetchError) {
+        console.error('Error fetching current shipment:', shipmentFetchError);
+        throw new Error('Failed to fetch current shipment');
+      }
+      
+      if (!currentShipment) {
+        toast.error('No active shipment found at this dock');
+        throw new Error('No active shipment found at this dock');
+      }
+      
+      shipmentCode = currentShipment.shipment_code;
+      console.log('Found current shipment code:', shipmentCode);
     }
     
     // Verify shipment is assigned to this dock
