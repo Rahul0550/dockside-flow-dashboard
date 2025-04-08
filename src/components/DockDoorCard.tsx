@@ -38,22 +38,18 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [showBlockConfirmation, setShowBlockConfirmation] = useState(false);
 
-  // Determine cargo type and set badge colors
   const getCargoType = () => {
-    // In a real app, this would come from the server data
     const types = ["Frozen", "Normal", "Mixed"];
-    return types[Math.floor(Number(dock.id.replace("D", "")) % 3)]; // For demo purposes, fixing the type error
+    return types[Math.floor(Number(dock.id.replace("D", "")) % 3)];
   };
 
   const getLoadingPercentage = () => {
-    // In a real app, this would come from the server data
     return dock.status === "Occupied"
       ? Math.floor((Date.now() - new Date(dock.lastUpdated).getTime()) / 1000) %
           100
       : 0;
   };
 
-  // Determine status class for styling
   const getStatusClass = (status: string) => {
     if (isBlocked)
       return "bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-red-500";
@@ -105,7 +101,6 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
       return;
     }
 
-    // Instead of immediately blocking, show the confirmation dialog
     setShowBlockConfirmation(true);
   };
 
@@ -121,15 +116,14 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
     setShowBlockConfirmation(false);
   };
 
-  // Format last updated time as "X minutes/hours ago"
   const formattedTime = dock.lastUpdated
     ? formatDistanceToNow(new Date(dock.lastUpdated), { addSuffix: true })
     : "N/A";
   const cargoType = getCargoType();
   const loadingPercentage = getLoadingPercentage();
 
-  // Determine the dock status label
   const statusLabel = isBlocked ? "Blocked" : dock.status;
+  const displayName = dock.dock_name || dock.name || "Unknown Dock";
 
   return (
     <>
@@ -140,7 +134,7 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
       >
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-bold">{dock.dock_name}</CardTitle>
+            <CardTitle className="text-lg font-bold">{displayName}</CardTitle>
             <div className="flex items-center gap-2">
               <span className={getStatusBadge(dock.status)}>{statusLabel}</span>
               <ContextMenu>
@@ -242,7 +236,7 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
             </AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to {isBlocked ? "unblock" : "block"} dock{" "}
-              {dock.name}?
+              {displayName}?
               {!isBlocked && " This will prevent any trucks from docking here."}
             </AlertDialogDescription>
           </AlertDialogHeader>

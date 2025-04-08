@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { DockStatus, DockDoor } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
@@ -19,8 +20,9 @@ import { useToast } from "@/hooks/use-toast";
 type SupabaseDockDoorToDockDoor = (dock: any) => DockDoor;
 
 const mapSupabaseDockToDockDoor: SupabaseDockDoorToDockDoor = (dock) => ({
-  id: dock.id || "",
-  name: dock.name || "",
+  id: dock.dock_id || "",
+  name: dock.dock_name || "",
+  dock_name: dock.dock_name || "",  // Add this property to match what's being used
   status: (dock.status as DockStatus) || "Available",
   assignedTruck: dock.assigned_truck || undefined,
   lastUpdated: dock.last_updated || "",

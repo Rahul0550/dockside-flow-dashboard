@@ -5,6 +5,7 @@ export type CargoType = "Frozen" | "Normal" | "Mixed";
 export interface DockDoor {
   id: string;
   name: string;
+  dock_name?: string; // Add optional dock_name property
   status: DockStatus;
   assignedTruck?: string;
   lastUpdated: string;
