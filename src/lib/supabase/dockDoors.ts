@@ -6,9 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const fetchDockDoors = async () => {
   const { data, error } = await supabase
-    .from('dock_doors')
+    .from('dock_master')  // Changed from 'dock_doors' to 'dock_master'
     .select('*')
-    .order('name', { ascending: true });
+    .order('dock_name', { ascending: true });
   
   if (error) {
     console.error('Error fetching dock doors:', error);

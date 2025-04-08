@@ -35,25 +35,25 @@ type SortField =
 type SupabaseTruckToTruck = (truck: any) => Truck;
 
 const mapSupabaseTruckToTruck: SupabaseTruckToTruck = (truck) => ({
-  id: truck.id || "",
+  id: truck.shipment_code || "",
   vehicleNumber: truck.vehicle_number || "",
-  licensePlate: truck.license_plate || "",
+  licensePlate: truck.vehicle_number || "", // Fallback to vehicle_number
   shipmentCode: truck.shipment_code || "",
-  carrier: truck.carrier || "",
-  driver: truck.driver || "",
+  carrier: truck.transporter || "",
+  driver: truck.driver_name || "",
   driverContact: truck.driver_contact || undefined,
   transporter: truck.transporter || undefined,
-  cargoType: truck.cargo_type || "Normal",
+  cargoType: truck.cargo_types && truck.cargo_types.length > 0 ? truck.cargo_types[0] : "Normal",
   quantity: truck.quantity || 0,
-  arrivalTime: truck.arrival_time || "",
-  actualArrivalTime: truck.actual_arrival_time || undefined,
+  arrivalTime: truck.eta || "",
+  actualArrivalTime: truck.dock_in_time || undefined,
   appointmentTime: truck.appointment_time || undefined,
-  estimatedArrivalTime: truck.estimated_arrival_time || "",
-  estimatedDockOutTime: truck.estimated_dock_out_time || undefined,
-  status: truck.status || "In Queue",
-  assignedDock: truck.assigned_dock || undefined,
-  estimatedWaitTime: truck.estimated_wait_time || undefined,
-  priority: truck.priority || "Low"
+  estimatedArrivalTime: truck.eta || "",
+  estimatedDockOutTime: truck.dock_out_time || undefined,
+  status: truck.dockdoor_assigned ? "Assigned" : "In Queue",
+  assignedDock: truck.dockdoor_assigned || undefined,
+  estimatedWaitTime: undefined,
+  priority: "Medium" // Default priority
 });
 
 export function TruckQueue({ trucks: initialTrucks }: TruckQueueProps) {

@@ -6,9 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
  */
 export const fetchTrucks = async () => {
   const { data, error } = await supabase
-    .from('trucks')
+    .from('shipment')  // Changed from 'trucks' to 'shipment'
     .select('*')
-    .order('estimated_arrival_time', { ascending: true });
+    .order('eta', { ascending: true });
   
   if (error) {
     console.error('Error fetching trucks:', error);
