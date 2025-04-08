@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Loader2, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -71,11 +71,13 @@ export function TruckQueue({ trucks: initialTrucks }: TruckQueueProps) {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Fetch trucks from Supabase if not provided as props
+  // Fetch trucks from Supabase with staleTime set to 0 to ensure fresh data on refetch
   const { data: fetchedTrucks = [], isLoading, isError } = useQuery({
-    queryKey: ['trucks'],
+    queryKey: ['truckQueue'],
     queryFn: fetchTrucks,
-    enabled: !initialTrucks
+    enabled: !initialTrucks,
+    staleTime: 0,
+    refetchOnWindowFocus: true
   });
   
   // Map Supabase data to our application's Truck type
