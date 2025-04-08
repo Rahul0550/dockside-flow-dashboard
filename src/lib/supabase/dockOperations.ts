@@ -3,10 +3,48 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 /**
- * Dock in a vehicle to a dock door
+ * Dock in the next available vehicle in queue to a dock door
  */
-export const dockInVehicle = async (dockId: string, shipmentCode: string) => {
+export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
   try {
+    // If shipment code is not provided, find the next available shipment
+    if (!shipmentCode) {
+      // Get next available shipment that has no dock assigned yet
+      const { data: nextShipment, error: shipmentError } = await supabase
+        .from('shipment')
+        .select('shipment_code')
+        .is('dockdoor_assigned', null)
+        .is('dock_in_time', null)
+        .order('eta', { ascending: true })
+        .limit(1)
+        .single();
+      
+      if (shipmentError || !nextShipment) {
+        console.error('No available shipments found:', shipmentError);
+        toast.error('No vehicles available in the queue');
+        throw new Error('No available shipments found');
+      }
+      
+      shipmentCode = nextShipment.shipment_code;
+    }
+    
+    // Check if dock is available
+    const { data: dockData, error: dockCheckError } = await supabase
+      .from('dock_master')
+      .select('status')
+      .eq('dock_id', dockId)
+      .single();
+      
+    if (dockCheckError) {
+      console.error('Error checking dock status:', dockCheckError);
+      throw new Error('Failed to check dock status');
+    }
+    
+    if (dockData.status !== 'Available') {
+      toast.error(`Dock is not available. Current status: ${dockData.status}`);
+      throw new Error(`Dock is not available. Current status: ${dockData.status}`);
+    }
+
     // Update the dock status to Occupied
     const dockUpdate = await supabase
       .from('dock_master')

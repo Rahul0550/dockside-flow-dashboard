@@ -15,20 +15,15 @@ interface DockCardFooterProps {
 export function DockCardFooter({ dockId, status, assignedTruck, estimatedCompletion }: DockCardFooterProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // For this demo, we're using a hardcoded shipment code for the dock in operation
-  // In a real scenario, you would select a shipment from a list
   const handleDockIn = async () => {
     try {
       setIsLoading(true);
-      // In a real implementation, you would show a dialog to select a shipment
-      const demoShipmentCode = "SHIP-001";
-      await dockInVehicle(dockId, demoShipmentCode);
-      toast.success(`Vehicle docked in successfully`);
-      // Trigger a refresh of the dock door data
-      // You would typically use React Query to handle this
+      // The updated dockInVehicle function will find the next available vehicle
+      await dockInVehicle(dockId);
+      // Refresh will happen through React Query in the parent components
     } catch (error) {
       console.error("Error docking in vehicle:", error);
-      toast.error("Failed to dock in vehicle");
+      // Error toast is already handled in the dockInVehicle function
     } finally {
       setIsLoading(false);
     }
@@ -43,11 +38,10 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
     try {
       setIsLoading(true);
       await dockOutVehicle(dockId, assignedTruck);
-      toast.success(`Vehicle docked out successfully`);
-      // Trigger a refresh of the dock door data
+      // Refresh will happen through React Query in the parent components
     } catch (error) {
       console.error("Error docking out vehicle:", error);
-      toast.error("Failed to dock out vehicle");
+      // Error toast is already handled in the dockOutVehicle function
     } finally {
       setIsLoading(false);
     }
