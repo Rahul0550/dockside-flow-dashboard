@@ -63,30 +63,26 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
       )}
       
       <div className="flex gap-2">
-        {status === "Available" ? (
-          <Button 
-            className="flex-1" 
-            onClick={handleDockIn}
-            disabled={isLoading}
-          >
-            Dock In
-          </Button>
-        ) : null}
+        <Button 
+          className="flex-1" 
+          onClick={handleDockIn}
+          disabled={isLoading || status !== "Available"}
+        >
+          Dock In
+        </Button>
         
-        {status === "Occupied" ? (
-          <Button 
-            className="flex-1" 
-            onClick={handleDockOut}
-            disabled={isLoading}
-          >
-            Dock Out
-          </Button>
-        ) : null}
+        <Button 
+          className="flex-1" 
+          onClick={handleDockOut}
+          disabled={isLoading || status !== "Occupied" || !assignedTruck}
+        >
+          Dock Out
+        </Button>
         
         {status === "Maintenance" && (
-          <Button className="flex-1" disabled>
-            Under Maintenance
-          </Button>
+          <div className="w-full text-center text-sm text-muted-foreground">
+            This dock is under maintenance
+          </div>
         )}
       </div>
     </div>
