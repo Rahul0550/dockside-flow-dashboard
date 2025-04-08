@@ -4,6 +4,7 @@ import { Clock } from "lucide-react";
 import { useState } from "react";
 import { dockInVehicle, dockOutVehicle } from "@/lib/supabase/dockOperations";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DockCardFooterProps {
   dockId: string;
@@ -14,13 +15,16 @@ interface DockCardFooterProps {
 
 export function DockCardFooter({ dockId, status, assignedTruck, estimatedCompletion }: DockCardFooterProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleDockIn = async () => {
     try {
       setIsLoading(true);
       // The updated dockInVehicle function will find the next available vehicle
       await dockInVehicle(dockId);
-      // Refresh will happen through React Query in the parent components
+      // Refresh data through React Query
+      queryClient.invalidateQueries({ queryKey: ['dockDoors'] });
+      queryClient.invalidateQueries({ queryKey: ['trucks'] });
     } catch (error) {
       console.error("Error docking in vehicle:", error);
       // Error toast is already handled in the dockInVehicle function
@@ -38,7 +42,9 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
     try {
       setIsLoading(true);
       await dockOutVehicle(dockId, assignedTruck);
-      // Refresh will happen through React Query in the parent components
+      // Refresh data through React Query
+      queryClient.invalidateQueries({ queryKey: ['dockDoors'] });
+      queryClient.invalidateQueries({ queryKey: ['trucks'] });
     } catch (error) {
       console.error("Error docking out vehicle:", error);
       // Error toast is already handled in the dockOutVehicle function
