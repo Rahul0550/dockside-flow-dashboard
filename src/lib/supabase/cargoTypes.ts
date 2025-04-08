@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { CargoTypeData } from "@/lib/data";
+import { CargoTypeData, CargoType } from "@/lib/data";
 
 /**
  * Fetches cargo type distribution data from the database
@@ -26,9 +26,9 @@ export const fetchCargoTypeData = async (): Promise<CargoTypeData[]> => {
     }
   });
   
-  // Convert to CargoTypeData format
+  // Convert to CargoTypeData format and ensure proper typing
   const result: CargoTypeData[] = Object.entries(cargoTypeCounts).map(([name, value]) => ({
-    name,
+    name: name as CargoType, // Cast the string to CargoType
     value
   }));
   

@@ -10,7 +10,7 @@ import {
   Legend 
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCargoTypeData } from "@/lib/supabase"; // This is now fixed
+import { fetchCargoTypeData } from "@/lib/supabase/cargoTypes"; // Fixed import path
 import { Loader2 } from "lucide-react";
 
 interface CargoTypeChartProps {
