@@ -3,20 +3,30 @@ import { DockDoor } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, TruckIcon } from "lucide-react";
+import { Clock, Menu, TruckIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Progress } from "@/components/ui/progress"; 
+import { 
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+} from "@/components/ui/context-menu";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface DockDoorCardProps {
   dock: DockDoor;
 }
 
 export function DockDoorCard({ dock }: DockDoorCardProps) {
+  const [isBlocked, setIsBlocked] = useState(false);
+
   // Determine cargo type and set badge colors
   const getCargoType = () => {
     // In a real app, this would come from the server data
     const types = ["Frozen", "Normal", "Mixed"];
-    return types[Math.floor(dock.id % 3)]; // For demo purposes
+    return types[Math.floor(Number(dock.id.replace("D", "")) % 3)]; // For demo purposes, fixing the type error
   };
 
   const getLoadingPercentage = () => {
@@ -26,6 +36,8 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
 
   // Determine status class for styling
   const getStatusClass = (status: string) => {
+    if (isBlocked) return "bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-red-500";
+    
     switch (status) {
       case "Available":
         return "bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500";
@@ -39,6 +51,8 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
   };
 
   const getStatusBadge = (status: string) => {
+    if (isBlocked) return "status-badge bg-red-100 text-red-800 border border-red-200";
+    
     switch (status) {
       case "Available":
         return "status-badge status-available";
@@ -64,17 +78,47 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
     }
   };
 
+  const handleToggleBlock = () => {
+    if (dock.status === "Occupied") {
+      toast.error("Cannot block an occupied dock");
+      return;
+    }
+    
+    setIsBlocked(prev => !prev);
+    toast.success(isBlocked ? "Dock unblocked successfully" : "Dock blocked successfully");
+  };
+
   // Format last updated time as "X minutes/hours ago"
   const formattedTime = formatDistanceToNow(new Date(dock.lastUpdated), { addSuffix: true });
   const cargoType = getCargoType();
   const loadingPercentage = getLoadingPercentage();
+
+  // Determine the dock status label
+  const statusLabel = isBlocked ? "Blocked" : dock.status;
 
   return (
     <Card className={`${getStatusClass(dock.status)} shadow-sm hover:shadow-md transition-all`}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-bold">{dock.name}</CardTitle>
-          <span className={getStatusBadge(dock.status)}>{dock.status}</span>
+          <div className="flex items-center gap-2">
+            <span className={getStatusBadge(dock.status)}>{statusLabel}</span>
+            <ContextMenu>
+              <ContextMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                  <Menu className="h-4 w-4" />
+                </Button>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem 
+                  onClick={handleToggleBlock}
+                  disabled={dock.status === "Occupied"}
+                >
+                  {isBlocked ? "Unblock Dock" : "Block Dock"}
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="pb-1">
@@ -122,7 +166,7 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
             variant="secondary" 
             size="sm" 
             className="flex-1 text-xs font-medium"
-            disabled={dock.status === "Maintenance"}
+            disabled={dock.status === "Maintenance" || isBlocked}
           >
             Dock In
           </Button>
