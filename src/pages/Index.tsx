@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { DockStatus, DockDoor } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
@@ -10,7 +9,7 @@ import { Header } from "@/components/Header";
 import { DockDoorFilter } from "@/components/DockDoorFilter";
 import { Warehouse, RefreshCw } from "lucide-react";
 import { AverageDockTime } from "@/components/AverageDockTime";
-import { AddShipmentForm } from "@/components/AddShipmentForm";
+import { AddShipmentButton } from "@/components/shipment/AddShipmentButton";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDockDoors } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -42,7 +41,6 @@ const Index = () => {
     queryFn: fetchDockDoors
   });
 
-  // Map Supabase data to our application's DockDoor type
   const dockDoors: DockDoor[] = fetchedDockDoors.map(mapSupabaseDockToDockDoor);
 
   const filteredDocks = statusFilter === "All" 
@@ -70,7 +68,6 @@ const Index = () => {
     }
   };
 
-  // Use data from lib/data.ts for hourly volume chart
   const hourlyVolume = [
     { hour: "6AM", trucks: 3 },
     { hour: "7AM", trucks: 5 },
@@ -112,7 +109,6 @@ const Index = () => {
           </Button>
         </div>
 
-        {/* Average Dock Time & Status Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
           <AverageDockTime />
           <div className="lg:col-span-3">
@@ -120,7 +116,6 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Dock Doors Section */}
         <div className="mb-8 bg-white p-4 rounded-xl shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
             <h2 className="text-xl font-semibold mb-2 sm:mb-0">Dock Doors</h2>
@@ -151,16 +146,14 @@ const Index = () => {
           </div>
         </div>
         
-        {/* Truck Queue */}
         <div className="mb-8 bg-white p-4 rounded-xl shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
             <h2 className="text-xl font-semibold">Truck Queue</h2>
-            <AddShipmentForm />
+            <AddShipmentButton />
           </div>
           <TruckQueue />
         </div>
         
-        {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-4 rounded-xl shadow-sm">
             <CargoTypeChart />
