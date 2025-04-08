@@ -4,6 +4,7 @@ import { CardTitle } from "@/components/ui/card";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { MoreVertical } from "lucide-react";
 import { DockStatus } from "@/lib/data";
+import { Badge } from "@/components/ui/badge";
 
 export interface DockCardHeaderProps {
   displayName: string;
@@ -11,6 +12,7 @@ export interface DockCardHeaderProps {
   statusLabel: string;
   isBlocked: boolean;
   onBlockRequest: () => void;
+  productType?: string | null;
 }
 
 export function DockCardHeader({ 
@@ -18,7 +20,8 @@ export function DockCardHeader({
   status, 
   statusLabel,
   isBlocked,
-  onBlockRequest 
+  onBlockRequest,
+  productType
 }: DockCardHeaderProps) {
   const getStatusBadge = (status: string) => {
     if (isBlocked)
@@ -36,27 +39,52 @@ export function DockCardHeader({
     }
   };
 
+  const getProductTypeBadge = (type: string | null | undefined) => {
+    if (!type) return "";
+    
+    switch (type.toLowerCase()) {
+      case "frozen":
+        return "bg-blue-100 text-blue-800 border border-blue-200";
+      case "dry":
+        return "bg-amber-100 text-amber-800 border border-amber-200";
+      case "fresh":
+        return "bg-green-100 text-green-800 border border-green-200";
+      default:
+        return "bg-purple-100 text-purple-800 border border-purple-200";
+    }
+  };
+
   return (
-    <div className="flex justify-between items-center">
-      <CardTitle className="text-lg font-bold">{displayName}</CardTitle>
-      <div className="flex items-center gap-2">
-        <span className={getStatusBadge(status)}>{statusLabel}</span>
-        <ContextMenu>
-          <ContextMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </ContextMenuTrigger>
-          <ContextMenuContent>
-            <ContextMenuItem
-              onClick={onBlockRequest}
-              disabled={status === "OCCUPIED"}
-            >
-              {isBlocked ? "Unblock Dock" : "Block Dock"}
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-between items-center">
+        <CardTitle className="text-lg font-bold">{displayName}</CardTitle>
+        <div className="flex items-center gap-2">
+          <span className={getStatusBadge(status)}>{statusLabel}</span>
+          <ContextMenu>
+            <ContextMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem
+                onClick={onBlockRequest}
+                disabled={status === "OCCUPIED"}
+              >
+                {isBlocked ? "Unblock Dock" : "Block Dock"}
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        </div>
       </div>
+      
+      {productType && (
+        <div>
+          <Badge className={`text-xs font-normal ${getProductTypeBadge(productType)}`}>
+            {productType}
+          </Badge>
+        </div>
+      )}
     </div>
   );
 }

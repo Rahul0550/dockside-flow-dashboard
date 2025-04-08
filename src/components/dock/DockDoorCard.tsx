@@ -36,6 +36,8 @@ export function DockDoorCard({
   const dockAssignedTruck = dock?.assignedTruck || assignedTruck;
   const dockLastUpdated = dock?.lastUpdated || lastUpdated || new Date().toISOString();
   const dockEstimatedCompletion = dock?.estimatedCompletion || estimatedCompletion;
+  const dockProductType = dock?.product_type;
+  const dockVehicleTypes = dock?.vehicle_type_compatibility || [];
   
   // Track blocked status
   const [isBlocked, setIsBlocked] = useState(false);
@@ -80,6 +82,7 @@ export function DockDoorCard({
           statusLabel={getStatusLabel()}
           isBlocked={isBlocked}
           onBlockRequest={handleBlockRequest}
+          productType={dockProductType}
         />
       </div>
       
@@ -91,7 +94,9 @@ export function DockDoorCard({
             status: dockStatus,
             assignedTruck: dockAssignedTruck,
             lastUpdated: dockLastUpdated,
-            estimatedCompletion: dockEstimatedCompletion
+            estimatedCompletion: dockEstimatedCompletion,
+            product_type: dockProductType,
+            vehicle_type_compatibility: dockVehicleTypes
           }}
           isBlocked={isBlocked} 
         />
