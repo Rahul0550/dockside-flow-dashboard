@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Bell, Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +15,7 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b sticky top-0 z-10">
+    <header className="bg-white border-b sticky top-0 z-10 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="h-16 flex items-center justify-between">
           <div className="flex items-center">
@@ -68,8 +68,9 @@ export function Header() {
                 <Search className="h-4 w-4" />
               </Button>
             )}
-            <Button variant="ghost" size="icon">
-              <Bell className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="text-secondary hover:text-secondary/80">
+              <MessageCircle className="h-5 w-5" />
+              <span className="sr-only">Enable chatbot</span>
             </Button>
             <Button variant="outline" size="sm">Refresh</Button>
           </div>

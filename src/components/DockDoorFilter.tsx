@@ -14,6 +14,7 @@ export function DockDoorFilter({ selectedStatus, onStatusChange }: DockDoorFilte
         variant={selectedStatus === "All" ? "default" : "outline"}
         size="sm"
         onClick={() => onStatusChange("All")}
+        className={selectedStatus === "All" ? "bg-dock-primary hover:bg-dock-primary/90" : ""}
       >
         All
       </Button>
