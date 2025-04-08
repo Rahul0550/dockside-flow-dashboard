@@ -1,6 +1,7 @@
 
+import { useState } from "react";
 import { Truck } from "@/lib/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -10,33 +11,76 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface TruckQueueProps {
   trucks: Truck[];
 }
 
-export function TruckQueue({ trucks }: TruckQueueProps) {
-  // Sort trucks by priority and arrival time
-  const sortedTrucks = [...trucks].sort((a, b) => {
-    const priorityOrder = { High: 0, Medium: 1, Low: 2 };
-    if (a.priority !== b.priority) {
-      return priorityOrder[a.priority] - priorityOrder[b.priority];
-    }
-    return new Date(a.arrivalTime).getTime() - new Date(b.arrivalTime).getTime();
-  });
+type SortField = 
+  | "vehicleNumber" 
+  | "shipmentCode"
+  | "appointmentTime" 
+  | "estimatedArrivalTime" 
+  | "estimatedDockOutTime" 
+  | "actualArrivalTime" 
+  | "cargoType"
+  | "status";
 
-  const getPriorityBadge = (priority: string) => {
-    switch (priority) {
-      case "High":
-        return <Badge variant="destructive">High</Badge>;
-      case "Medium":
-        return <Badge variant="secondary">Medium</Badge>;
-      case "Low":
-        return <Badge variant="outline">Low</Badge>;
-      default:
-        return <Badge variant="outline">{priority}</Badge>;
+export function TruckQueue({ trucks }: TruckQueueProps) {
+  const [sortField, setSortField] = useState<SortField>("estimatedArrivalTime");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Handle sorting
+  const handleSort = (field: SortField) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
     }
+  };
+  
+  // Filter and sort trucks
+  const filteredAndSortedTrucks = [...trucks]
+    .filter(truck => {
+      if (!searchQuery) return true;
+      
+      const query = searchQuery.toLowerCase();
+      return (
+        truck.vehicleNumber.toLowerCase().includes(query) ||
+        truck.shipmentCode.toLowerCase().includes(query) ||
+        truck.driver.toLowerCase().includes(query) ||
+        truck.carrier.toLowerCase().includes(query) ||
+        truck.cargoType.toLowerCase().includes(query) ||
+        (truck.transporter && truck.transporter.toLowerCase().includes(query))
+      );
+    })
+    .sort((a, b) => {
+      let valA: any;
+      let valB: any;
+      
+      // Special handling for date fields
+      if (["appointmentTime", "estimatedArrivalTime", "estimatedDockOutTime", "actualArrivalTime"].includes(sortField)) {
+        valA = a[sortField as keyof Truck] ? new Date(a[sortField as keyof Truck] as string).getTime() : 0;
+        valB = b[sortField as keyof Truck] ? new Date(b[sortField as keyof Truck] as string).getTime() : 0;
+      } else {
+        valA = a[sortField as keyof Truck] || "";
+        valB = b[sortField as keyof Truck] || "";
+      }
+      
+      if (valA === valB) return 0;
+      
+      const comparison = valA < valB ? -1 : 1;
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+
+  const getSortIcon = (field: SortField) => {
+    if (field !== sortField) return "↕️";
+    return sortDirection === "asc" ? "↑" : "↓";
   };
 
   const getStatusBadge = (status: string) => {
@@ -52,35 +96,114 @@ export function TruckQueue({ trucks }: TruckQueueProps) {
     }
   };
 
+  const formatDateTime = (dateStr?: string) => {
+    if (!dateStr) return "—";
+    try {
+      return format(new Date(dateStr), "MMM d, h:mm a");
+    } catch (error) {
+      return "Invalid Date";
+    }
+  };
+
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Truck Queue</CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
+        <div className="mb-4 relative">
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search vehicles, shipments, drivers..."
+              className="pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Truck ID</TableHead>
-                <TableHead>Carrier</TableHead>
-                <TableHead>Arrival</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("vehicleNumber")}
+                >
+                  Vehicle No. {getSortIcon("vehicleNumber")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("shipmentCode")}
+                >
+                  Shipment {getSortIcon("shipmentCode")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("appointmentTime")}
+                >
+                  Appointment {getSortIcon("appointmentTime")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("estimatedArrivalTime")}
+                >
+                  Est. Arrival {getSortIcon("estimatedArrivalTime")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("actualArrivalTime")}
+                >
+                  Actual Arrival {getSortIcon("actualArrivalTime")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("estimatedDockOutTime")}
+                >
+                  Est. Dock Out {getSortIcon("estimatedDockOutTime")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("cargoType")}
+                >
+                  Cargo Type {getSortIcon("cargoType")}
+                </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => handleSort("status")}
+                >
+                  Status {getSortIcon("status")}
+                </TableHead>
                 <TableHead>Dock</TableHead>
-                <TableHead className="text-right">Priority</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedTrucks.map((truck) => (
-                <TableRow key={truck.id}>
-                  <TableCell className="font-medium">{truck.id}</TableCell>
-                  <TableCell>{truck.carrier}</TableCell>
-                  <TableCell>{formatDistanceToNow(new Date(truck.arrivalTime), { addSuffix: true })}</TableCell>
-                  <TableCell>{getStatusBadge(truck.status)}</TableCell>
-                  <TableCell>{truck.assignedDock || "—"}</TableCell>
-                  <TableCell className="text-right">{getPriorityBadge(truck.priority)}</TableCell>
+              {filteredAndSortedTrucks.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-4 text-muted-foreground">
+                    No vehicles found
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredAndSortedTrucks.map((truck) => (
+                  <TableRow key={truck.id}>
+                    <TableCell className="font-medium">{truck.vehicleNumber}</TableCell>
+                    <TableCell>{truck.shipmentCode}</TableCell>
+                    <TableCell>{formatDateTime(truck.appointmentTime)}</TableCell>
+                    <TableCell>{formatDateTime(truck.estimatedArrivalTime)}</TableCell>
+                    <TableCell>{formatDateTime(truck.actualArrivalTime)}</TableCell>
+                    <TableCell>{formatDateTime(truck.estimatedDockOutTime)}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className={
+                        truck.cargoType === "Frozen" ? "bg-blue-100 text-blue-800 border-blue-300" :
+                        truck.cargoType === "Normal" ? "bg-green-100 text-green-800 border-green-300" :
+                        "bg-purple-100 text-purple-800 border-purple-300"
+                      }>
+                        {truck.cargoType}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(truck.status)}</TableCell>
+                    <TableCell>{truck.assignedDock || "—"}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

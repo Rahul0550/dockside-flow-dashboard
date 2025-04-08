@@ -1,14 +1,16 @@
 
 import { useState } from "react";
-import { DockDoor, DockStatus, activityData, dockDoors, trucks } from "@/lib/data";
+import { DockDoor, DockStatus, cargoTypeData, dockDoors, trucks } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
 import { TruckQueue } from "@/components/TruckQueue";
-import { ActivityChart, VolumeChart } from "@/components/DashboardCharts";
+import { VolumeChart } from "@/components/DashboardCharts";
+import { CargoTypeChart } from "@/components/CargoTypeChart";
 import { DockStatusSummary } from "@/components/DockStatusSummary";
 import { Header } from "@/components/Header";
 import { DockDoorFilter } from "@/components/DockDoorFilter";
 import { Warehouse } from "lucide-react";
 import { AverageDockTime } from "@/components/AverageDockTime";
+import { AddVehicleForm } from "@/components/AddVehicleForm";
 
 const Index = () => {
   const [statusFilter, setStatusFilter] = useState<DockStatus | "All">("All");
@@ -78,14 +80,17 @@ const Index = () => {
         
         {/* Truck Queue */}
         <div className="mb-8 bg-white p-4 rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Truck Queue</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+            <h2 className="text-xl font-semibold">Truck Queue</h2>
+            <AddVehicleForm />
+          </div>
           <TruckQueue trucks={trucks} />
         </div>
         
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-4 rounded-xl shadow-sm">
-            <ActivityChart data={activityData} />
+            <CargoTypeChart data={cargoTypeData} />
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm">
             <VolumeChart data={hourlyVolume} />
