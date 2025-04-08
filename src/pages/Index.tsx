@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { DockDoor, DockStatus, activityData, dockDoors, hourlyVolumeData, trucks } from "@/lib/data";
+import { DockDoor, DockStatus, activityData, dockDoors, trucks } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
 import { TruckQueue } from "@/components/TruckQueue";
 import { ActivityChart, VolumeChart } from "@/components/DashboardCharts";
@@ -21,6 +21,22 @@ const Index = () => {
     console.log("Refreshing data...");
     // In a real application, this would fetch new data from the server
   };
+
+  // Use data from lib/data.ts
+  const hourlyVolume = [
+    { hour: "6AM", trucks: 3 },
+    { hour: "7AM", trucks: 5 },
+    { hour: "8AM", trucks: 8 },
+    { hour: "9AM", trucks: 12 },
+    { hour: "10AM", trucks: 10 },
+    { hour: "11AM", trucks: 7 },
+    { hour: "12PM", trucks: 6 },
+    { hour: "1PM", trucks: 9 },
+    { hour: "2PM", trucks: 11 },
+    { hour: "3PM", trucks: 8 },
+    { hour: "4PM", trucks: 6 },
+    { hour: "5PM", trucks: 4 }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-blue-50/30">
@@ -72,7 +88,7 @@ const Index = () => {
             <ActivityChart data={activityData} />
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm">
-            <VolumeChart data={hourlyVolumeData} />
+            <VolumeChart data={hourlyVolume} />
           </div>
         </div>
       </main>
