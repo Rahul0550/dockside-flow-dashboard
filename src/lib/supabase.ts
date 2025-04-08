@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './database.types';
 
@@ -64,6 +63,7 @@ export const fetchCargoTypeData = async () => {
   }));
 };
 
+// Existing functions
 export const addTruck = async (truckData: {
   vehicle_number: string;
   license_plate: string;
@@ -131,6 +131,193 @@ export const updateDockStatus = async (id: string, status: string, truckId?: str
 
   if (error) {
     console.error('Error updating dock status:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+// New functions for the new tables
+
+// Dock Master functions
+export const fetchDockMasters = async () => {
+  const { data, error } = await supabase
+    .from('dock_master')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching dock masters:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
+export const addDockMaster = async (dockData: {
+  dock_name: string;
+  product_type?: string;
+  vehicle_type_compatibility: string[];
+  status: string;
+}) => {
+  const { data, error } = await supabase
+    .from('dock_master')
+    .insert(dockData)
+    .select();
+
+  if (error) {
+    console.error('Error adding dock master:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+export const updateDockMasterStatus = async (dockId: string, status: string) => {
+  const { data, error } = await supabase
+    .from('dock_master')
+    .update({ status })
+    .eq('dock_id', dockId)
+    .select();
+
+  if (error) {
+    console.error('Error updating dock master status:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+// Vehicle Master functions
+export const fetchVehicleMasters = async () => {
+  const { data, error } = await supabase
+    .from('vehicle_master')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching vehicle masters:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
+export const addVehicleMaster = async (vehicleData: {
+  vehicle_number: string;
+  vehicle_type: string;
+}) => {
+  const { data, error } = await supabase
+    .from('vehicle_master')
+    .insert(vehicleData)
+    .select();
+
+  if (error) {
+    console.error('Error adding vehicle master:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+// Speed Master functions
+export const fetchSpeedMasters = async () => {
+  const { data, error } = await supabase
+    .from('speed_master')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching speed masters:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
+export const addSpeedMaster = async (speedData: {
+  cargo_type: string;
+  vehicle_type: string;
+  loading_speed: number;
+}) => {
+  const { data, error } = await supabase
+    .from('speed_master')
+    .insert(speedData)
+    .select();
+
+  if (error) {
+    console.error('Error adding speed master:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+// Shipment functions
+export const fetchShipments = async () => {
+  const { data, error } = await supabase
+    .from('shipment')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching shipments:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
+export const addShipment = async (shipmentData: {
+  shipment_code: string;
+  vehicle_number: string;
+  cargo_types: string[];
+  quantity: number;
+  eta?: string;
+  appointment_time?: string;
+  driver_name?: string;
+  driver_contact?: string;
+  transporter?: string;
+}) => {
+  const { data, error } = await supabase
+    .from('shipment')
+    .insert(shipmentData)
+    .select();
+
+  if (error) {
+    console.error('Error adding shipment:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+export const updateShipmentDock = async (shipmentCode: string, dockId: string) => {
+  const { data, error } = await supabase
+    .from('shipment')
+    .update({ dockdoor_assigned: dockId })
+    .eq('shipment_code', shipmentCode)
+    .select();
+
+  if (error) {
+    console.error('Error updating shipment dock assignment:', error);
+    throw error;
+  }
+
+  return data?.[0];
+};
+
+export const updateShipmentDockTimes = async (
+  shipmentCode: string, 
+  update: { 
+    dock_in_time?: string;
+    dock_out_time?: string;
+  }
+) => {
+  const { data, error } = await supabase
+    .from('shipment')
+    .update(update)
+    .eq('shipment_code', shipmentCode)
+    .select();
+
+  if (error) {
+    console.error('Error updating shipment dock times:', error);
     throw error;
   }
 

@@ -9,7 +9,120 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      dock_master: {
+        Row: {
+          creation_timestamp: string
+          dock_id: string
+          dock_name: string
+          product_type: string | null
+          status: string
+          vehicle_type_compatibility: string[]
+        }
+        Insert: {
+          creation_timestamp?: string
+          dock_id?: string
+          dock_name: string
+          product_type?: string | null
+          status: string
+          vehicle_type_compatibility: string[]
+        }
+        Update: {
+          creation_timestamp?: string
+          dock_id?: string
+          dock_name?: string
+          product_type?: string | null
+          status?: string
+          vehicle_type_compatibility?: string[]
+        }
+        Relationships: []
+      }
+      shipment: {
+        Row: {
+          appointment_time: string | null
+          cargo_types: string[]
+          creation_timestamp: string
+          dock_in_time: string | null
+          dock_out_time: string | null
+          dockdoor_assigned: string | null
+          driver_contact: string | null
+          driver_name: string | null
+          eta: string | null
+          quantity: number
+          shipment_code: string
+          transporter: string | null
+          vehicle_number: string
+        }
+        Insert: {
+          appointment_time?: string | null
+          cargo_types: string[]
+          creation_timestamp?: string
+          dock_in_time?: string | null
+          dock_out_time?: string | null
+          dockdoor_assigned?: string | null
+          driver_contact?: string | null
+          driver_name?: string | null
+          eta?: string | null
+          quantity: number
+          shipment_code: string
+          transporter?: string | null
+          vehicle_number: string
+        }
+        Update: {
+          appointment_time?: string | null
+          cargo_types?: string[]
+          creation_timestamp?: string
+          dock_in_time?: string | null
+          dock_out_time?: string | null
+          dockdoor_assigned?: string | null
+          driver_contact?: string | null
+          driver_name?: string | null
+          eta?: string | null
+          quantity?: number
+          shipment_code?: string
+          transporter?: string | null
+          vehicle_number?: string
+        }
+        Relationships: []
+      }
+      speed_master: {
+        Row: {
+          cargo_type: string
+          creation_timestamp: string
+          loading_speed: number
+          vehicle_type: string
+        }
+        Insert: {
+          cargo_type: string
+          creation_timestamp?: string
+          loading_speed: number
+          vehicle_type: string
+        }
+        Update: {
+          cargo_type?: string
+          creation_timestamp?: string
+          loading_speed?: number
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
+      vehicle_master: {
+        Row: {
+          creation_timestamp: string
+          vehicle_number: string
+          vehicle_type: string
+        }
+        Insert: {
+          creation_timestamp?: string
+          vehicle_number: string
+          vehicle_type: string
+        }
+        Update: {
+          creation_timestamp?: string
+          vehicle_number?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
