@@ -60,17 +60,19 @@ export interface CargoTypeData {
   value: number;
 }
 
-// Mock data for dock doors
+// Mock data for dock doors - Updated to include dock_name property
 export const dockDoors: DockDoor[] = [
   { 
     id: "D1", 
-    name: "Dock D1", 
+    name: "Dock D1",
+    dock_name: "Dock D1", 
     status: "Available", 
     lastUpdated: "2025-04-08T08:30:00" 
   },
   { 
     id: "D2", 
-    name: "Dock D2", 
+    name: "Dock D2",
+    dock_name: "Dock D2", 
     status: "Occupied", 
     assignedTruck: "T123", 
     lastUpdated: "2025-04-08T09:15:00",
@@ -78,20 +80,23 @@ export const dockDoors: DockDoor[] = [
   },
   { 
     id: "D3", 
-    name: "Dock D3", 
+    name: "Dock D3",
+    dock_name: "Dock D3", 
     status: "Maintenance", 
     lastUpdated: "2025-04-08T07:45:00",
     estimatedCompletion: "2025-04-09T12:00:00"
   },
   { 
     id: "D4", 
-    name: "Dock D4", 
+    name: "Dock D4",
+    dock_name: "Dock D4", 
     status: "Available", 
     lastUpdated: "2025-04-08T08:00:00" 
   },
   { 
     id: "D5", 
-    name: "Dock D5", 
+    name: "Dock D5",
+    dock_name: "Dock D5", 
     status: "Occupied",
     assignedTruck: "T456", 
     lastUpdated: "2025-04-08T08:45:00",
@@ -99,13 +104,15 @@ export const dockDoors: DockDoor[] = [
   },
   { 
     id: "D6", 
-    name: "Dock D6", 
+    name: "Dock D6",
+    dock_name: "Dock D6", 
     status: "Available", 
     lastUpdated: "2025-04-08T08:15:00" 
   },
   { 
     id: "D7", 
-    name: "Dock D7", 
+    name: "Dock D7",
+    dock_name: "Dock D7", 
     status: "Occupied",
     assignedTruck: "T789", 
     lastUpdated: "2025-04-08T09:30:00",
@@ -113,7 +120,8 @@ export const dockDoors: DockDoor[] = [
   },
   { 
     id: "D8", 
-    name: "Dock D8", 
+    name: "Dock D8",
+    dock_name: "Dock D8", 
     status: "Maintenance", 
     lastUpdated: "2025-04-07T16:30:00",
     estimatedCompletion: "2025-04-10T09:00:00" 
