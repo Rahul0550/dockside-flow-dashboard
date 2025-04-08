@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { DockStatus, DockDoor } from "@/lib/data";
-import { DockDoorCard } from "@/components/DockDoorCard";
+import { DockDoorCard } from "@/components/dock";
 import { TruckQueue } from "@/components/TruckQueue";
 import { VolumeChart } from "@/components/DashboardCharts";
 import { CargoTypeChart } from "@/components/CargoTypeChart";
