@@ -5,3 +5,4 @@ export * from './trucks';
 export * from './shipments';
 export * from './vehicles';
 export * from './cargoTypes';
+export * from './dockOperations';
