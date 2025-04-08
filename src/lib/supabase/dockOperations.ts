@@ -98,19 +98,55 @@ export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
  */
 export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
   try {
+    // First, verify the dock is currently OCCUPIED and has the correct shipment assigned
+    const { data: dockData, error: dockCheckError } = await supabase
+      .from('dock_master')
+      .select('status')
+      .eq('dock_id', dockId)
+      .single();
+      
+    if (dockCheckError) {
+      console.error('Error checking dock status:', dockCheckError);
+      throw new Error('Failed to check dock status');
+    }
+    
+    // Make the status check case-insensitive
+    const normalizedStatus = dockData.status.toLowerCase();
+    if (normalizedStatus !== 'occupied') {
+      toast.error(`Dock is not occupied. Current status: ${dockData.status}`);
+      throw new Error(`Dock is not occupied. Current status: ${dockData.status}`);
+    }
+    
+    // Verify shipment is assigned to this dock
+    const { data: shipmentData, error: shipmentCheckError } = await supabase
+      .from('shipment')
+      .select('dockdoor_assigned')
+      .eq('shipment_code', shipmentCode)
+      .single();
+      
+    if (shipmentCheckError) {
+      console.error('Error checking shipment:', shipmentCheckError);
+      throw new Error('Failed to check shipment');
+    }
+    
+    if (shipmentData.dockdoor_assigned !== dockId) {
+      toast.error('Shipment is not assigned to this dock');
+      throw new Error('Shipment is not assigned to this dock');
+    }
+    
     // Update the dock status to Available
-    const dockUpdate = await supabase
+    const { error: dockUpdateError } = await supabase
       .from('dock_master')
       .update({ status: 'AVAILABLE' })
       .eq('dock_id', dockId);
     
-    if (dockUpdate.error) {
-      console.error('Error updating dock status:', dockUpdate.error);
+    if (dockUpdateError) {
+      console.error('Error updating dock status:', dockUpdateError);
       throw new Error('Failed to update dock status');
     }
     
     // Update the shipment with dock_out_time
-    const shipmentUpdate = await supabase
+    const { error: shipmentUpdateError } = await supabase
       .from('shipment')
       .update({
         dock_out_time: new Date().toISOString()
@@ -118,8 +154,13 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
       .eq('shipment_code', shipmentCode)
       .eq('dockdoor_assigned', dockId);
     
-    if (shipmentUpdate.error) {
-      console.error('Error updating shipment:', shipmentUpdate.error);
+    if (shipmentUpdateError) {
+      console.error('Error updating shipment:', shipmentUpdateError);
+      // Revert dock status on error
+      await supabase
+        .from('dock_master')
+        .update({ status: 'OCCUPIED' })
+        .eq('dock_id', dockId);
       throw new Error('Failed to update shipment');
     }
     

@@ -66,7 +66,7 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
         <Button 
           className="flex-1" 
           onClick={handleDockIn}
-          disabled={isLoading || status !== "AVAILABLE"}
+          disabled={isLoading || status.toUpperCase() !== "AVAILABLE"}
         >
           Dock In
         </Button>
@@ -74,7 +74,7 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
         <Button 
           className="flex-1" 
           onClick={handleDockOut}
-          disabled={isLoading || status !== "OCCUPIED" || !assignedTruck}
+          disabled={isLoading || status.toUpperCase() !== "OCCUPIED"}
         >
           Dock Out
         </Button>
