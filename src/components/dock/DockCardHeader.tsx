@@ -5,6 +5,12 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import { MoreVertical } from "lucide-react";
 import { DockStatus } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface DockCardHeaderProps {
   displayName: string;
@@ -60,21 +66,31 @@ export function DockCardHeader({
         <CardTitle className="text-lg font-bold">{displayName}</CardTitle>
         <div className="flex items-center gap-2">
           <span className={getStatusBadge(status)}>{statusLabel}</span>
-          <ContextMenu>
-            <ContextMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </ContextMenuTrigger>
-            <ContextMenuContent>
-              <ContextMenuItem
-                onClick={onBlockRequest}
-                disabled={status === "OCCUPIED"}
-              >
-                {isBlocked ? "Unblock Dock" : "Block Dock"}
-              </ContextMenuItem>
-            </ContextMenuContent>
-          </ContextMenu>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ContextMenu>
+                  <ContextMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-48">
+                    <ContextMenuItem
+                      onClick={onBlockRequest}
+                      disabled={status === "OCCUPIED"}
+                      className="cursor-pointer"
+                    >
+                      {isBlocked ? "Unblock Dock" : "Block Dock"}
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Dock Options</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       
