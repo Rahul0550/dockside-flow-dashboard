@@ -49,7 +49,7 @@ export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
     
     // Make the status check case-insensitive
     const normalizedStatus = dockData.status.toLowerCase();
-    if (normalizedStatus !== 'available' && normalizedStatus !== 'Available') {
+    if (normalizedStatus !== 'available') {
       toast.error(`Dock is not available. Current status: ${dockData.status}`);
       throw new Error(`Dock is not available. Current status: ${dockData.status}`);
     }
@@ -57,7 +57,7 @@ export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
     // Update the dock status to Occupied
     const { error: dockUpdateError } = await supabase
       .from('dock_master')
-      .update({ status: 'Occupied' })
+      .update({ status: 'OCCUPIED' })
       .eq('dock_id', dockId);
     
     if (dockUpdateError) {
@@ -79,7 +79,7 @@ export const dockInVehicle = async (dockId: string, shipmentCode?: string) => {
       // Revert dock status on error
       await supabase
         .from('dock_master')
-        .update({ status: 'Available' })
+        .update({ status: 'AVAILABLE' })
         .eq('dock_id', dockId);
       throw new Error('Failed to update shipment');
     }
@@ -101,7 +101,7 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
     // Update the dock status to Available
     const dockUpdate = await supabase
       .from('dock_master')
-      .update({ status: 'Available' })
+      .update({ status: 'AVAILABLE' })
       .eq('dock_id', dockId);
     
     if (dockUpdate.error) {
@@ -137,7 +137,7 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
  */
 export const blockDock = async (dockId: string, isBlocked: boolean) => {
   try {
-    const status = isBlocked ? 'Maintenance' : 'Available';
+    const status = isBlocked ? 'UNDER_MAINTENANCE' : 'AVAILABLE';
     
     const { data, error } = await supabase
       .from('dock_master')
