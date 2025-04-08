@@ -1,25 +1,39 @@
 
 import { useState } from "react";
-import { DockDoor, DockStatus, activityData, dockDoors, hourlyVolumeData, trucks } from "@/lib/data";
+import { DockDoor, DockStatus, dockDoors, trucks as initialTrucks, Truck } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
 import { TruckQueue } from "@/components/TruckQueue";
-import { ActivityChart, VolumeChart } from "@/components/DashboardCharts";
+import { VolumeChart } from "@/components/DashboardCharts";
 import { DockStatusSummary } from "@/components/DockStatusSummary";
 import { Header } from "@/components/Header";
 import { DockDoorFilter } from "@/components/DockDoorFilter";
 import { Warehouse } from "lucide-react";
 import { AverageDockTime } from "@/components/AverageDockTime";
+import { CargoDistributionChart } from "@/components/CargoDistributionChart";
+import { AddVehicleDialog } from "@/components/AddVehicleDialog";
 
 const Index = () => {
   const [statusFilter, setStatusFilter] = useState<DockStatus | "All">("All");
+  const [trucks, setTrucks] = useState<Truck[]>(initialTrucks);
 
   const filteredDocks = statusFilter === "All" 
     ? dockDoors 
     : dockDoors.filter(dock => dock.status === statusFilter);
 
-  const refreshData = () => {
-    console.log("Refreshing data...");
-    // In a real application, this would fetch new data from the server
+  const handleAddVehicle = (newVehicle: Partial<Truck>) => {
+    // Convert partial truck to full truck with required fields
+    const vehicle = {
+      ...newVehicle,
+      id: newVehicle.id || `T${Math.floor(Math.random() * 1000)}`,
+      licensePlate: newVehicle.licensePlate || "",
+      carrier: newVehicle.carrier || "",
+      driver: newVehicle.driver || "",
+      arrivalTime: newVehicle.arrivalTime || new Date().toISOString(),
+      status: newVehicle.status || "In Queue",
+      priority: newVehicle.priority || "Medium",
+    } as Truck;
+    
+    setTrucks(prev => [...prev, vehicle]);
   };
 
   return (
@@ -36,6 +50,7 @@ const Index = () => {
               Inbound Dock Dashboard
             </h1>
           </div>
+          <AddVehicleDialog onAddVehicle={handleAddVehicle} />
         </div>
 
         {/* Average Dock Time & Status Summary */}
@@ -62,14 +77,13 @@ const Index = () => {
         
         {/* Truck Queue */}
         <div className="mb-8 bg-white p-4 rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Truck Queue</h2>
           <TruckQueue trucks={trucks} />
         </div>
         
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-4 rounded-xl shadow-sm">
-            <ActivityChart data={activityData} />
+            <CargoDistributionChart trucks={trucks} />
           </div>
           <div className="bg-white p-4 rounded-xl shadow-sm">
             <VolumeChart data={hourlyVolumeData} />

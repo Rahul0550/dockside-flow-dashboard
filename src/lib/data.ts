@@ -1,5 +1,5 @@
 
-export type DockStatus = "Available" | "Occupied" | "Maintenance";
+export type DockStatus = "Available" | "Occupied" | "Maintenance" | "Blocked";
 
 export interface DockDoor {
   id: string;
@@ -8,6 +8,8 @@ export interface DockDoor {
   assignedTruck?: string;
   lastUpdated: string;
   estimatedCompletion?: string;
+  cargoType?: "Frozen" | "Normal" | "Mixed";
+  loadingPercentage?: number;
 }
 
 export interface Truck {
@@ -20,6 +22,12 @@ export interface Truck {
   assignedDock?: string;
   estimatedWaitTime?: string;
   priority: "Low" | "Medium" | "High";
+  appointmentTime?: string;
+  actualArrivalTime?: string;
+  estimatedDockOutTime?: string;
+  cargoType?: "Frozen" | "Normal" | "Both" | "Mixed";
+  quantity?: string;
+  shipmentCode?: string;
 }
 
 export interface ActivityData {
@@ -34,7 +42,9 @@ export const dockDoors: DockDoor[] = [
     id: "D1", 
     name: "Dock D1", 
     status: "Available", 
-    lastUpdated: "2025-04-08T08:30:00" 
+    lastUpdated: "2025-04-08T08:30:00",
+    cargoType: "Normal",
+    loadingPercentage: 0
   },
   { 
     id: "D2", 
@@ -42,7 +52,9 @@ export const dockDoors: DockDoor[] = [
     status: "Occupied", 
     assignedTruck: "T123", 
     lastUpdated: "2025-04-08T09:15:00",
-    estimatedCompletion: "2025-04-08T10:45:00"
+    estimatedCompletion: "2025-04-08T10:45:00",
+    cargoType: "Frozen",
+    loadingPercentage: 65
   },
   { 
     id: "D3", 
@@ -55,7 +67,9 @@ export const dockDoors: DockDoor[] = [
     id: "D4", 
     name: "Dock D4", 
     status: "Available", 
-    lastUpdated: "2025-04-08T08:00:00" 
+    lastUpdated: "2025-04-08T08:00:00",
+    cargoType: "Normal",
+    loadingPercentage: 0
   },
   { 
     id: "D5", 
@@ -63,13 +77,17 @@ export const dockDoors: DockDoor[] = [
     status: "Occupied",
     assignedTruck: "T456", 
     lastUpdated: "2025-04-08T08:45:00",
-    estimatedCompletion: "2025-04-08T11:30:00" 
+    estimatedCompletion: "2025-04-08T11:30:00",
+    cargoType: "Mixed",
+    loadingPercentage: 42
   },
   { 
     id: "D6", 
     name: "Dock D6", 
     status: "Available", 
-    lastUpdated: "2025-04-08T08:15:00" 
+    lastUpdated: "2025-04-08T08:15:00",
+    cargoType: "Frozen",
+    loadingPercentage: 0
   },
   { 
     id: "D7", 
@@ -77,14 +95,16 @@ export const dockDoors: DockDoor[] = [
     status: "Occupied",
     assignedTruck: "T789", 
     lastUpdated: "2025-04-08T09:30:00",
-    estimatedCompletion: "2025-04-08T12:15:00" 
+    estimatedCompletion: "2025-04-08T12:15:00",
+    cargoType: "Normal",
+    loadingPercentage: 78
   },
   { 
     id: "D8", 
     name: "Dock D8", 
     status: "Maintenance", 
     lastUpdated: "2025-04-07T16:30:00",
-    estimatedCompletion: "2025-04-10T09:00:00" 
+    estimatedCompletion: "2025-04-10T09:00:00"
   },
 ];
 
@@ -98,7 +118,13 @@ export const trucks: Truck[] = [
     arrivalTime: "2025-04-08T08:30:00",
     status: "Assigned",
     assignedDock: "D2",
-    priority: "Medium"
+    priority: "Medium",
+    appointmentTime: "2025-04-08T08:00:00",
+    actualArrivalTime: "2025-04-08T08:15:00",
+    estimatedDockOutTime: "2025-04-08T10:45:00",
+    cargoType: "Frozen",
+    quantity: "250",
+    shipmentCode: "SHP001"
   },
   {
     id: "T456",
@@ -108,7 +134,13 @@ export const trucks: Truck[] = [
     arrivalTime: "2025-04-08T08:45:00",
     status: "Assigned",
     assignedDock: "D5",
-    priority: "High"
+    priority: "High",
+    appointmentTime: "2025-04-08T08:30:00",
+    actualArrivalTime: "2025-04-08T08:40:00",
+    estimatedDockOutTime: "2025-04-08T11:30:00",
+    cargoType: "Mixed",
+    quantity: "180",
+    shipmentCode: "SHP002"
   },
   {
     id: "T789",
@@ -118,7 +150,13 @@ export const trucks: Truck[] = [
     arrivalTime: "2025-04-08T09:00:00",
     status: "Assigned",
     assignedDock: "D7",
-    priority: "Medium"
+    priority: "Medium",
+    appointmentTime: "2025-04-08T09:00:00",
+    actualArrivalTime: "2025-04-08T09:05:00",
+    estimatedDockOutTime: "2025-04-08T12:15:00",
+    cargoType: "Normal",
+    quantity: "320",
+    shipmentCode: "SHP003"
   },
   {
     id: "T234",
@@ -128,7 +166,11 @@ export const trucks: Truck[] = [
     arrivalTime: "2025-04-08T09:15:00",
     status: "In Queue",
     estimatedWaitTime: "45 minutes",
-    priority: "Low"
+    priority: "Low",
+    appointmentTime: "2025-04-08T10:00:00",
+    cargoType: "Normal",
+    quantity: "150",
+    shipmentCode: "SHP004"
   },
   {
     id: "T567",
@@ -138,7 +180,11 @@ export const trucks: Truck[] = [
     arrivalTime: "2025-04-08T09:30:00",
     status: "In Queue",
     estimatedWaitTime: "1 hour",
-    priority: "High"
+    priority: "High",
+    appointmentTime: "2025-04-08T10:30:00",
+    cargoType: "Frozen",
+    quantity: "200",
+    shipmentCode: "SHP005"
   },
   {
     id: "T890",
@@ -147,7 +193,13 @@ export const trucks: Truck[] = [
     driver: "James Brown",
     arrivalTime: "2025-04-08T08:15:00",
     status: "Completed",
-    priority: "Medium"
+    priority: "Medium",
+    appointmentTime: "2025-04-08T08:00:00",
+    actualArrivalTime: "2025-04-08T08:05:00",
+    estimatedDockOutTime: "2025-04-08T09:30:00",
+    cargoType: "Both",
+    quantity: "275",
+    shipmentCode: "SHP006"
   }
 ];
 
