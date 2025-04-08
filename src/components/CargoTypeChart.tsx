@@ -29,7 +29,7 @@ export function CargoTypeChart({ data: initialData }: CargoTypeChartProps) {
   const { data: cargoData, isLoading, isError } = useQuery({
     queryKey: ['cargoTypeData'],
     queryFn: fetchCargoTypeData,
-    initialData: initialData,
+    initialData: initialData ? initialData : undefined,
     enabled: !initialData
   });
   

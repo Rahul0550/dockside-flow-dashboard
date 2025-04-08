@@ -31,18 +31,45 @@ type SortField =
   | "cargoType"
   | "status";
 
+// Type mapping for Supabase to our local interfaces
+type SupabaseTruckToTruck = (truck: any) => Truck;
+
+const mapSupabaseTruckToTruck: SupabaseTruckToTruck = (truck) => ({
+  id: truck.id || "",
+  vehicleNumber: truck.vehicle_number || "",
+  licensePlate: truck.license_plate || "",
+  shipmentCode: truck.shipment_code || "",
+  carrier: truck.carrier || "",
+  driver: truck.driver || "",
+  driverContact: truck.driver_contact || undefined,
+  transporter: truck.transporter || undefined,
+  cargoType: truck.cargo_type || "Normal",
+  quantity: truck.quantity || 0,
+  arrivalTime: truck.arrival_time || "",
+  actualArrivalTime: truck.actual_arrival_time || undefined,
+  appointmentTime: truck.appointment_time || undefined,
+  estimatedArrivalTime: truck.estimated_arrival_time || "",
+  estimatedDockOutTime: truck.estimated_dock_out_time || undefined,
+  status: truck.status || "In Queue",
+  assignedDock: truck.assigned_dock || undefined,
+  estimatedWaitTime: truck.estimated_wait_time || undefined,
+  priority: truck.priority || "Low"
+});
+
 export function TruckQueue({ trucks: initialTrucks }: TruckQueueProps) {
   const [sortField, setSortField] = useState<SortField>("estimatedArrivalTime");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
   
   // Fetch trucks from Supabase if not provided as props
-  const { data: trucks, isLoading, isError } = useQuery({
+  const { data: fetchedTrucks = [], isLoading, isError } = useQuery({
     queryKey: ['trucks'],
     queryFn: fetchTrucks,
-    initialData: initialTrucks,
     enabled: !initialTrucks
   });
+  
+  // Map Supabase data to our application's Truck type
+  const trucks = initialTrucks || fetchedTrucks.map(mapSupabaseTruckToTruck);
   
   // Handle sorting
   const handleSort = (field: SortField) => {

@@ -4,7 +4,10 @@ import { Database } from './database.types';
 
 // Supabase client is automatically initialized with env variables 
 // provided by the Lovable Supabase integration
-export const supabase = createClient<Database>();
+export const supabase = createClient<Database>(
+  process.env.SUPABASE_URL || '',
+  process.env.SUPABASE_ANON_KEY || ''
+);
 
 // Helper functions for data operations
 export const fetchTrucks = async () => {
@@ -17,7 +20,7 @@ export const fetchTrucks = async () => {
     throw error;
   }
 
-  return data;
+  return data || [];
 };
 
 export const fetchDockDoors = async () => {
@@ -30,7 +33,7 @@ export const fetchDockDoors = async () => {
     throw error;
   }
 
-  return data;
+  return data || [];
 };
 
 export const fetchCargoTypeData = async () => {
@@ -43,11 +46,16 @@ export const fetchCargoTypeData = async () => {
     throw error;
   }
 
+  // Ensure we're working with valid data
+  const validData = data || [];
+  
   // Group by cargo type and count
   const cargoTypeCounts: Record<string, number> = {};
-  data.forEach(item => {
-    const cargoType = item.cargo_type;
-    cargoTypeCounts[cargoType] = (cargoTypeCounts[cargoType] || 0) + 1;
+  validData.forEach(item => {
+    if (item && typeof item === 'object' && 'cargo_type' in item) {
+      const cargoType = item.cargo_type;
+      cargoTypeCounts[cargoType] = (cargoTypeCounts[cargoType] || 0) + 1;
+    }
   });
 
   return Object.entries(cargoTypeCounts).map(([name, value]) => ({
@@ -56,7 +64,26 @@ export const fetchCargoTypeData = async () => {
   }));
 };
 
-export const addTruck = async (truckData: Omit<Database['public']['Tables']['trucks']['Insert'], 'id'>) => {
+export const addTruck = async (truckData: {
+  vehicle_number: string;
+  license_plate: string;
+  shipment_code: string;
+  carrier: string;
+  driver: string;
+  driver_contact?: string;
+  transporter?: string;
+  cargo_type: "Frozen" | "Normal" | "Mixed";
+  quantity: number;
+  arrival_time: string;
+  actual_arrival_time?: string;
+  appointment_time?: string;
+  estimated_arrival_time: string;
+  estimated_dock_out_time?: string;
+  status?: "In Queue" | "Assigned" | "Completed";
+  assigned_dock?: string;
+  estimated_wait_time?: string;
+  priority?: "Low" | "Medium" | "High";
+}) => {
   const { data, error } = await supabase
     .from('trucks')
     .insert(truckData)
@@ -71,12 +98,14 @@ export const addTruck = async (truckData: Omit<Database['public']['Tables']['tru
 };
 
 export const updateTruckStatus = async (id: string, status: string, dockId?: string) => {
+  const updateData: Record<string, any> = { status };
+  if (dockId) {
+    updateData.assigned_dock = dockId;
+  }
+
   const { data, error } = await supabase
     .from('trucks')
-    .update({ 
-      status, 
-      ...(dockId && { assigned_dock: dockId })
-    })
+    .update(updateData)
     .eq('id', id)
     .select();
 
@@ -89,12 +118,14 @@ export const updateTruckStatus = async (id: string, status: string, dockId?: str
 };
 
 export const updateDockStatus = async (id: string, status: string, truckId?: string) => {
+  const updateData: Record<string, any> = { status };
+  if (truckId) {
+    updateData.assigned_truck = truckId;
+  }
+
   const { data, error } = await supabase
     .from('dock_doors')
-    .update({ 
-      status, 
-      ...(truckId && { assigned_truck: truckId })
-    })
+    .update(updateData)
     .eq('id', id)
     .select();
 

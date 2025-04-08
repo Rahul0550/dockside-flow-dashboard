@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { DockStatus } from "@/lib/data";
+import { DockStatus, DockDoor } from "@/lib/data";
 import { DockDoorCard } from "@/components/DockDoorCard";
 import { TruckQueue } from "@/components/TruckQueue";
 import { VolumeChart } from "@/components/DashboardCharts";
@@ -16,12 +16,24 @@ import { fetchDockDoors } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+// Type mapping for Supabase to our local interfaces
+type SupabaseDockDoorToDockDoor = (dock: any) => DockDoor;
+
+const mapSupabaseDockToDockDoor: SupabaseDockDoorToDockDoor = (dock) => ({
+  id: dock.id || "",
+  name: dock.name || "",
+  status: (dock.status as DockStatus) || "Available",
+  assignedTruck: dock.assigned_truck || undefined,
+  lastUpdated: dock.last_updated || "",
+  estimatedCompletion: dock.estimated_completion || undefined
+});
+
 const Index = () => {
   const [statusFilter, setStatusFilter] = useState<DockStatus | "All">("All");
   const { toast } = useToast();
   
   const { 
-    data: dockDoors = [],
+    data: fetchedDockDoors = [],
     isLoading,
     isError,
     refetch
@@ -29,6 +41,9 @@ const Index = () => {
     queryKey: ['dockDoors'],
     queryFn: fetchDockDoors
   });
+
+  // Map Supabase data to our application's DockDoor type
+  const dockDoors: DockDoor[] = fetchedDockDoors.map(mapSupabaseDockToDockDoor);
 
   const filteredDocks = statusFilter === "All" 
     ? dockDoors 
