@@ -82,7 +82,7 @@ export type Database = {
         Row: {
           id: string
           name: string
-          status: "Available" | "Occupied" | "Maintenance"
+          status: "AVAILABLE" | "OCCUPIED" | "UNDER_MAINTENANCE"
           assigned_truck?: string
           last_updated: string
           estimated_completion?: string
@@ -91,7 +91,7 @@ export type Database = {
         Insert: {
           id?: string
           name: string
-          status?: "Available" | "Occupied" | "Maintenance"
+          status?: "AVAILABLE" | "OCCUPIED" | "UNDER_MAINTENANCE"
           assigned_truck?: string
           last_updated?: string
           estimated_completion?: string
@@ -100,7 +100,7 @@ export type Database = {
         Update: {
           id?: string
           name?: string
-          status?: "Available" | "Occupied" | "Maintenance"
+          status?: "AVAILABLE" | "OCCUPIED" | "UNDER_MAINTENANCE"
           assigned_truck?: string
           last_updated?: string
           estimated_completion?: string

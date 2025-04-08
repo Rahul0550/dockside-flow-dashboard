@@ -26,7 +26,7 @@ const mapSupabaseDockToDockDoor: SupabaseDockDoorToDockDoor = (dock) => ({
   dock_name: dock.dock_name || "",
   product_type: dock.product_type || null,
   vehicle_type_compatibility: dock.vehicle_type_compatibility || [],
-  status: (dock.status as DockStatus) || "Available",
+  status: (dock.status as DockStatus) || "AVAILABLE",
   assignedTruck: dock.assigned_truck || undefined,
   lastUpdated: dock.creation_timestamp || new Date().toISOString(),
   estimatedCompletion: dock.estimated_completion || undefined

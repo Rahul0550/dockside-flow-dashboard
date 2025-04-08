@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export interface DockDoorCardProps {
   id?: string;
   name?: string;
-  status?: "Available" | "Occupied" | "Maintenance";
+  status?: "AVAILABLE" | "OCCUPIED" | "UNDER_MAINTENANCE";
   assignedTruck?: string;
   lastUpdated?: string;
   estimatedCompletion?: string;
@@ -32,7 +32,7 @@ export function DockDoorCard({
   // If dock is provided, use its properties, otherwise use the direct props
   const dockId = dock?.id || id || "";
   const dockName = dock?.dock_name || name || "";
-  const dockStatus = dock?.status || status || "Available";
+  const dockStatus = dock?.status || status || "AVAILABLE";
   const dockAssignedTruck = dock?.assignedTruck || assignedTruck;
   const dockLastUpdated = dock?.lastUpdated || lastUpdated || new Date().toISOString();
   const dockEstimatedCompletion = dock?.estimatedCompletion || estimatedCompletion;

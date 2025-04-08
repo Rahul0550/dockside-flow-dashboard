@@ -7,9 +7,9 @@ interface DockStatusSummaryProps {
 }
 
 export function DockStatusSummary({ dockDoors }: DockStatusSummaryProps) {
-  const availableCount = dockDoors.filter(dock => dock.status === "Available").length;
-  const occupiedCount = dockDoors.filter(dock => dock.status === "Occupied").length;
-  const maintenanceCount = dockDoors.filter(dock => dock.status === "Maintenance").length;
+  const availableCount = dockDoors.filter(dock => dock.status === "AVAILABLE").length;
+  const occupiedCount = dockDoors.filter(dock => dock.status === "OCCUPIED").length;
+  const maintenanceCount = dockDoors.filter(dock => dock.status === "UNDER_MAINTENANCE").length;
   const totalCount = dockDoors.length;
   
   const availablePercentage = Math.round((availableCount / totalCount) * 100);

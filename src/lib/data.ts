@@ -1,5 +1,5 @@
 
-export type DockStatus = "Available" | "Occupied" | "Maintenance";
+export type DockStatus = "AVAILABLE" | "OCCUPIED" | "UNDER_MAINTENANCE";
 export type CargoType = "Frozen" | "Normal" | "Mixed";
 
 // Updated to match dock_master table structure
@@ -66,14 +66,14 @@ export const dockDoors: DockDoor[] = [
     id: "D1", 
     name: "Dock D1",
     dock_name: "Dock D1", 
-    status: "Available", 
+    status: "AVAILABLE", 
     lastUpdated: "2025-04-08T08:30:00" 
   },
   { 
     id: "D2", 
     name: "Dock D2",
     dock_name: "Dock D2", 
-    status: "Occupied", 
+    status: "OCCUPIED", 
     assignedTruck: "T123", 
     lastUpdated: "2025-04-08T09:15:00",
     estimatedCompletion: "2025-04-08T10:45:00"
@@ -82,7 +82,7 @@ export const dockDoors: DockDoor[] = [
     id: "D3", 
     name: "Dock D3",
     dock_name: "Dock D3", 
-    status: "Maintenance", 
+    status: "UNDER_MAINTENANCE", 
     lastUpdated: "2025-04-08T07:45:00",
     estimatedCompletion: "2025-04-09T12:00:00"
   },
@@ -90,14 +90,14 @@ export const dockDoors: DockDoor[] = [
     id: "D4", 
     name: "Dock D4",
     dock_name: "Dock D4", 
-    status: "Available", 
+    status: "AVAILABLE", 
     lastUpdated: "2025-04-08T08:00:00" 
   },
   { 
     id: "D5", 
     name: "Dock D5",
     dock_name: "Dock D5", 
-    status: "Occupied",
+    status: "OCCUPIED",
     assignedTruck: "T456", 
     lastUpdated: "2025-04-08T08:45:00",
     estimatedCompletion: "2025-04-08T11:30:00" 
@@ -106,14 +106,14 @@ export const dockDoors: DockDoor[] = [
     id: "D6", 
     name: "Dock D6",
     dock_name: "Dock D6", 
-    status: "Available", 
+    status: "AVAILABLE", 
     lastUpdated: "2025-04-08T08:15:00" 
   },
   { 
     id: "D7", 
     name: "Dock D7",
     dock_name: "Dock D7", 
-    status: "Occupied",
+    status: "OCCUPIED",
     assignedTruck: "T789", 
     lastUpdated: "2025-04-08T09:30:00",
     estimatedCompletion: "2025-04-08T12:15:00" 
@@ -122,7 +122,7 @@ export const dockDoors: DockDoor[] = [
     id: "D8", 
     name: "Dock D8",
     dock_name: "Dock D8", 
-    status: "Maintenance", 
+    status: "UNDER_MAINTENANCE", 
     lastUpdated: "2025-04-07T16:30:00",
     estimatedCompletion: "2025-04-10T09:00:00" 
   },

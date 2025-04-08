@@ -25,11 +25,11 @@ export function DockCardHeader({
       return "status-badge bg-red-100 text-red-800 border border-red-200";
 
     switch (status) {
-      case "Available":
+      case "AVAILABLE":
         return "status-badge status-available";
-      case "Occupied":
+      case "OCCUPIED":
         return "status-badge status-occupied";
-      case "Maintenance":
+      case "UNDER_MAINTENANCE":
         return "status-badge status-maintenance";
       default:
         return "status-badge";
@@ -50,7 +50,7 @@ export function DockCardHeader({
           <ContextMenuContent>
             <ContextMenuItem
               onClick={onBlockRequest}
-              disabled={status === "Occupied"}
+              disabled={status === "OCCUPIED"}
             >
               {isBlocked ? "Unblock Dock" : "Block Dock"}
             </ContextMenuItem>

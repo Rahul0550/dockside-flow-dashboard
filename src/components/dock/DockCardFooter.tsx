@@ -55,7 +55,7 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
 
   return (
     <div className="p-4 border-t bg-muted/50">
-      {status === "Occupied" && estimatedCompletion && (
+      {status === "OCCUPIED" && estimatedCompletion && (
         <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
           <span>Est. completion: {new Date(estimatedCompletion).toLocaleTimeString()}</span>
@@ -66,7 +66,7 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
         <Button 
           className="flex-1" 
           onClick={handleDockIn}
-          disabled={isLoading || status !== "Available"}
+          disabled={isLoading || status !== "AVAILABLE"}
         >
           Dock In
         </Button>
@@ -74,12 +74,12 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
         <Button 
           className="flex-1" 
           onClick={handleDockOut}
-          disabled={isLoading || status !== "Occupied" || !assignedTruck}
+          disabled={isLoading || status !== "OCCUPIED" || !assignedTruck}
         >
           Dock Out
         </Button>
         
-        {status === "Maintenance" && (
+        {status === "UNDER_MAINTENANCE" && (
           <div className="w-full text-center text-sm text-muted-foreground">
             This dock is under maintenance
           </div>

@@ -19,26 +19,26 @@ export function DockDoorFilter({ selectedStatus, onStatusChange }: DockDoorFilte
         All
       </Button>
       <Button
-        variant={selectedStatus === "Available" ? "default" : "outline"}
+        variant={selectedStatus === "AVAILABLE" ? "default" : "outline"}
         size="sm"
-        onClick={() => onStatusChange("Available")}
-        className={selectedStatus === "Available" ? "bg-green-600 hover:bg-green-700" : ""}
+        onClick={() => onStatusChange("AVAILABLE")}
+        className={selectedStatus === "AVAILABLE" ? "bg-green-600 hover:bg-green-700" : ""}
       >
         Available
       </Button>
       <Button
-        variant={selectedStatus === "Occupied" ? "default" : "outline"}
+        variant={selectedStatus === "OCCUPIED" ? "default" : "outline"}
         size="sm"
-        onClick={() => onStatusChange("Occupied")}
-        className={selectedStatus === "Occupied" ? "bg-amber-500 hover:bg-amber-600" : ""}
+        onClick={() => onStatusChange("OCCUPIED")}
+        className={selectedStatus === "OCCUPIED" ? "bg-amber-500 hover:bg-amber-600" : ""}
       >
         Occupied
       </Button>
       <Button
-        variant={selectedStatus === "Maintenance" ? "default" : "outline"}
+        variant={selectedStatus === "UNDER_MAINTENANCE" ? "default" : "outline"}
         size="sm"
-        onClick={() => onStatusChange("Maintenance")}
-        className={selectedStatus === "Maintenance" ? "bg-gray-500 hover:bg-gray-600" : ""}
+        onClick={() => onStatusChange("UNDER_MAINTENANCE")}
+        className={selectedStatus === "UNDER_MAINTENANCE" ? "bg-gray-500 hover:bg-gray-600" : ""}
       >
         Maintenance
       </Button>

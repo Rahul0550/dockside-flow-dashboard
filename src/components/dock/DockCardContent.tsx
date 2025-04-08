@@ -16,7 +16,7 @@ export function DockCardContent({ dock, isBlocked }: DockCardContentProps) {
   };
 
   const getLoadingPercentage = () => {
-    return dock.status === "Occupied"
+    return dock.status === "OCCUPIED"
       ? Math.floor((Date.now() - new Date(dock.lastUpdated).getTime()) / 1000) %
           100
       : 0;
@@ -42,7 +42,7 @@ export function DockCardContent({ dock, isBlocked }: DockCardContentProps) {
     <>
       <div className="mb-3 flex items-center gap-2">
         <Badge className={getCargoBadgeColor(cargoType)}>{cargoType}</Badge>
-        {dock.status === "Occupied" && (
+        {dock.status === "OCCUPIED" && (
           <Badge variant="outline" className="flex items-center gap-1">
             <TruckIcon className="h-3 w-3" />
             <span>{dock.assignedTruck}</span>
@@ -50,7 +50,7 @@ export function DockCardContent({ dock, isBlocked }: DockCardContentProps) {
         )}
       </div>
 
-      {dock.status === "Occupied" && (
+      {dock.status === "OCCUPIED" && (
         <div className="space-y-2 mb-3">
           <div className="flex justify-between text-xs mb-1">
             <span className="font-medium">Loading Progress</span>
@@ -70,7 +70,7 @@ export function DockCardContent({ dock, isBlocked }: DockCardContentProps) {
         </div>
       )}
 
-      {dock.status === "Maintenance" && dock.estimatedCompletion && (
+      {dock.status === "UNDER_MAINTENANCE" && dock.estimatedCompletion && (
         <p className="text-xs text-muted-foreground mt-1 mb-3">
           Est. completion:{" "}
           {new Date(dock.estimatedCompletion).toLocaleDateString()} at{" "}
