@@ -99,7 +99,7 @@ const Index = () => {
               <Warehouse className="h-5 w-5 text-dock-primary" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-dock-primary to-dock-secondary bg-clip-text text-transparent">
-              Inbound Dock Dashboard
+              Dock Dashboard
             </h1>
           </div>
           
