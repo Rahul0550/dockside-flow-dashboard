@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { Calendar as CalendarIcon, X } from "lucide-react";
 import { ControllerRenderProps } from "react-hook-form";
 import { FormControl } from "@/components/ui/form";
@@ -14,6 +14,9 @@ interface DateTimePickerProps {
 }
 
 export function DateTimePicker({ field, placeholder }: DateTimePickerProps) {
+  // Add a safety check for invalid date values
+  const isValidDate = field.value ? isValid(new Date(field.value)) : false;
+  
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,8 +28,8 @@ export function DateTimePicker({ field, placeholder }: DateTimePickerProps) {
               !field.value && "text-muted-foreground"
             )}
           >
-            {field.value ? (
-              format(field.value, "PPP p")
+            {(field.value && isValidDate) ? (
+              format(new Date(field.value), "PPP")
             ) : (
               <span>{placeholder}</span>
             )}
@@ -47,9 +50,10 @@ export function DateTimePicker({ field, placeholder }: DateTimePickerProps) {
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={field.value}
+          selected={isValidDate ? new Date(field.value) : undefined}
           onSelect={field.onChange}
           initialFocus
+          className="pointer-events-auto"
         />
       </PopoverContent>
     </Popover>

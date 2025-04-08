@@ -12,17 +12,14 @@ interface CargoTypeSelectorProps {
 
 export function CargoTypeSelector({ control, selectedTypes, onSelectionChange }: CargoTypeSelectorProps) {
   const handleCargoTypeChange = (cargoType: string) => {
-    onSelectionChange(prev => {
-      if (prev.includes(cargoType)) {
-        const updated = prev.filter(type => type !== cargoType);
-        control._formValues.cargoTypes = updated;
-        return updated;
-      } else {
-        const updated = [...prev, cargoType];
-        control._formValues.cargoTypes = updated;
-        return updated;
-      }
-    });
+    const updatedTypes = selectedTypes.includes(cargoType)
+      ? selectedTypes.filter(type => type !== cargoType)
+      : [...selectedTypes, cargoType];
+    
+    // Update form values
+    control._formValues.cargoTypes = updatedTypes;
+    // Update parent component state
+    onSelectionChange(updatedTypes);
   };
 
   return (

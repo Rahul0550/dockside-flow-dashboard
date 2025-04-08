@@ -2,23 +2,19 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { useToast } from "@/hooks/use-toast";
 import { addShipment, checkShipmentExists } from "@/lib/supabase";
 import { addVehicleMaster, checkVehicleExists } from "@/lib/supabase/vehicles";
 import { shipmentFormSchema, ShipmentFormValues } from "./ShipmentFormSchema";
 import { DialogFooter } from "@/components/ui/dialog";
 import { CargoTypeSelector } from "./CargoTypeSelector";
+import { DateTimePicker } from "./DateTimePicker";
 
 interface ShipmentFormProps {
   onSuccess: () => void;
@@ -40,6 +36,8 @@ export function ShipmentForm({ onSuccess }: ShipmentFormProps) {
       driverName: "",
       driverContact: "",
       transporter: "",
+      eta: undefined,
+      appointmentTime: undefined,
     },
   });
   
@@ -63,13 +61,14 @@ export function ShipmentForm({ onSuccess }: ShipmentFormProps) {
         });
       }
       
+      // Convert dates to ISO strings if they exist
       const shipmentData = {
         shipment_code: data.shipmentCode,
         vehicle_number: data.vehicleNumber,
         cargo_types: data.cargoTypes,
         quantity: data.quantity!,
-        eta: data.eta ? data.eta.toISOString() : null,
-        appointment_time: data.appointmentTime ? data.appointmentTime.toISOString() : null,
+        eta: data.eta ? new Date(data.eta).toISOString() : null,
+        appointment_time: data.appointmentTime ? new Date(data.appointmentTime).toISOString() : null,
         driver_name: data.driverName || null,
         driver_contact: data.driverContact || null,
         transporter: data.transporter || null
