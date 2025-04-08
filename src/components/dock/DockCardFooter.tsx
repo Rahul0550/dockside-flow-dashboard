@@ -75,11 +75,6 @@ export function DockCardFooter({ dockId, status, assignedTruck, estimatedComplet
           Dock Out
         </Button>
         
-        {status === "UNDER_MAINTENANCE" && (
-          <div className="w-full text-center text-sm text-muted-foreground">
-            This dock is under maintenance
-          </div>
-        )}
       </div>
     </div>
   );
