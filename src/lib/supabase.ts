@@ -218,6 +218,21 @@ export const addVehicleMaster = async (vehicleData: {
   return data?.[0];
 };
 
+export const checkVehicleExists = async (vehicleNumber: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('vehicle_master')
+    .select('vehicle_number')
+    .eq('vehicle_number', vehicleNumber)
+    .maybeSingle();
+  
+  if (error) {
+    console.error('Error checking vehicle existence:', error);
+    throw error;
+  }
+  
+  return !!data;
+};
+
 // Speed Master functions
 export const fetchSpeedMasters = async () => {
   const { data, error } = await supabase
@@ -269,11 +284,14 @@ export const addShipment = async (shipmentData: {
   vehicle_number: string;
   cargo_types: string[];
   quantity: number;
-  eta?: string;
-  appointment_time?: string;
-  driver_name?: string;
-  driver_contact?: string;
-  transporter?: string;
+  eta?: string | null;
+  appointment_time?: string | null;
+  driver_name?: string | null;
+  driver_contact?: string | null;
+  transporter?: string | null;
+  dock_in_time?: string | null;
+  dock_out_time?: string | null;
+  dockdoor_assigned?: string | null;
 }) => {
   const { data, error } = await supabase
     .from('shipment')
@@ -286,6 +304,21 @@ export const addShipment = async (shipmentData: {
   }
 
   return data?.[0];
+};
+
+export const checkShipmentExists = async (shipmentCode: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('shipment')
+    .select('shipment_code')
+    .eq('shipment_code', shipmentCode)
+    .maybeSingle();
+  
+  if (error) {
+    console.error('Error checking shipment existence:', error);
+    throw error;
+  }
+  
+  return !!data;
 };
 
 export const updateShipmentDock = async (shipmentCode: string, dockId: string) => {

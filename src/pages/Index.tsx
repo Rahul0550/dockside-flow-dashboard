@@ -10,7 +10,7 @@ import { Header } from "@/components/Header";
 import { DockDoorFilter } from "@/components/DockDoorFilter";
 import { Warehouse, RefreshCw } from "lucide-react";
 import { AverageDockTime } from "@/components/AverageDockTime";
-import { AddVehicleForm } from "@/components/AddVehicleForm";
+import { AddShipmentForm } from "@/components/AddShipmentForm";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDockDoors } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -155,7 +155,7 @@ const Index = () => {
         <div className="mb-8 bg-white p-4 rounded-xl shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
             <h2 className="text-xl font-semibold">Truck Queue</h2>
-            <AddVehicleForm />
+            <AddShipmentForm />
           </div>
           <TruckQueue />
         </div>
