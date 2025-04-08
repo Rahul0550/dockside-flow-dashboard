@@ -1,12 +1,17 @@
-
 import { DockDoor } from "@/lib/data";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MoreVertical, TruckIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { Progress } from "@/components/ui/progress"; 
-import { 
+import { Progress } from "@/components/ui/progress";
+import {
   ContextMenu,
   ContextMenuTrigger,
   ContextMenuContent,
@@ -42,13 +47,17 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
 
   const getLoadingPercentage = () => {
     // In a real app, this would come from the server data
-    return dock.status === "Occupied" ? Math.floor((Date.now() - new Date(dock.lastUpdated).getTime()) / 1000) % 100 : 0;
+    return dock.status === "Occupied"
+      ? Math.floor((Date.now() - new Date(dock.lastUpdated).getTime()) / 1000) %
+          100
+      : 0;
   };
 
   // Determine status class for styling
   const getStatusClass = (status: string) => {
-    if (isBlocked) return "bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-red-500";
-    
+    if (isBlocked)
+      return "bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-red-500";
+
     switch (status) {
       case "Available":
         return "bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500";
@@ -62,8 +71,9 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
   };
 
   const getStatusBadge = (status: string) => {
-    if (isBlocked) return "status-badge bg-red-100 text-red-800 border border-red-200";
-    
+    if (isBlocked)
+      return "status-badge bg-red-100 text-red-800 border border-red-200";
+
     switch (status) {
       case "Available":
         return "status-badge status-available";
@@ -94,15 +104,17 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
       toast.error("Cannot block an occupied dock");
       return;
     }
-    
+
     // Instead of immediately blocking, show the confirmation dialog
     setShowBlockConfirmation(true);
   };
 
   const handleConfirmBlock = () => {
-    setIsBlocked(prev => !prev);
+    setIsBlocked((prev) => !prev);
     setShowBlockConfirmation(false);
-    toast.success(isBlocked ? "Dock unblocked successfully" : "Dock blocked successfully");
+    toast.success(
+      isBlocked ? "Dock unblocked successfully" : "Dock blocked successfully"
+    );
   };
 
   const handleCancelBlock = () => {
@@ -110,7 +122,9 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
   };
 
   // Format last updated time as "X minutes/hours ago"
-  const formattedTime = formatDistanceToNow(new Date(dock.lastUpdated), { addSuffix: true });
+  const formattedTime = dock.lastUpdated
+    ? formatDistanceToNow(new Date(dock.lastUpdated), { addSuffix: true })
+    : "N/A";
   const cargoType = getCargoType();
   const loadingPercentage = getLoadingPercentage();
 
@@ -119,7 +133,11 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
 
   return (
     <>
-      <Card className={`${getStatusClass(dock.status)} shadow-sm hover:shadow-md transition-all`}>
+      <Card
+        className={`${getStatusClass(
+          dock.status
+        )} shadow-sm hover:shadow-md transition-all`}
+      >
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-bold">{dock.name}</CardTitle>
@@ -132,7 +150,7 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
                   </Button>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
-                  <ContextMenuItem 
+                  <ContextMenuItem
                     onClick={handleBlockDockRequest}
                     disabled={dock.status === "Occupied"}
                   >
@@ -161,40 +179,49 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
                 <span className="font-medium">{loadingPercentage}%</span>
               </div>
               <Progress value={loadingPercentage} className="h-2" />
-              
+
               {dock.estimatedCompletion && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Est. completion: {new Date(dock.estimatedCompletion).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  Est. completion:{" "}
+                  {new Date(dock.estimatedCompletion).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
               )}
             </div>
           )}
-          
+
           {dock.status === "Maintenance" && dock.estimatedCompletion && (
             <p className="text-xs text-muted-foreground mt-1 mb-3">
-              Est. completion: {new Date(dock.estimatedCompletion).toLocaleDateString()} at {new Date(dock.estimatedCompletion).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              Est. completion:{" "}
+              {new Date(dock.estimatedCompletion).toLocaleDateString()} at{" "}
+              {new Date(dock.estimatedCompletion).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </p>
           )}
         </CardContent>
-        
+
         <CardFooter className="flex flex-col pt-0 space-y-2">
           <div className="flex items-center gap-1 text-xs text-muted-foreground w-full">
             <Clock className="h-3 w-3" />
             <span>Updated {formattedTime}</span>
           </div>
-          
+
           <div className="flex gap-2 w-full">
-            <Button 
-              variant="secondary" 
-              size="sm" 
+            <Button
+              variant="secondary"
+              size="sm"
               className="flex-1 text-xs font-medium"
               disabled={dock.status === "Maintenance" || isBlocked}
             >
               Dock In
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="flex-1 text-xs font-medium"
               disabled={dock.status !== "Occupied"}
             >
@@ -204,22 +231,32 @@ export function DockDoorCard({ dock }: DockDoorCardProps) {
         </CardFooter>
       </Card>
 
-      <AlertDialog open={showBlockConfirmation} onOpenChange={setShowBlockConfirmation}>
+      <AlertDialog
+        open={showBlockConfirmation}
+        onOpenChange={setShowBlockConfirmation}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
               {isBlocked ? "Unblock Dock" : "Block Dock"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to {isBlocked ? "unblock" : "block"} dock {dock.name}?
+              Are you sure you want to {isBlocked ? "unblock" : "block"} dock{" "}
+              {dock.name}?
               {!isBlocked && " This will prevent any trucks from docking here."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleCancelBlock}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogCancel onClick={handleCancelBlock}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
               onClick={handleConfirmBlock}
-              className={isBlocked ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+              className={
+                isBlocked
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-red-600 hover:bg-red-700"
+              }
             >
               {isBlocked ? "Unblock" : "Block"}
             </AlertDialogAction>
