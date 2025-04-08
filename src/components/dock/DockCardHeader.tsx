@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { CardTitle } from "@/components/ui/card";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Lock, LockOpen } from "lucide-react";
 import { DockStatus } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -66,31 +66,34 @@ export function DockCardHeader({
         <CardTitle className="text-lg font-bold">{displayName}</CardTitle>
         <div className="flex items-center gap-2">
           <span className={getStatusBadge(status)}>{statusLabel}</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ContextMenu>
-                  <ContextMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent className="w-48">
-                    <ContextMenuItem
-                      onClick={onBlockRequest}
-                      disabled={status === "OCCUPIED"}
-                      className="cursor-pointer"
-                    >
-                      {isBlocked ? "Unblock Dock" : "Block Dock"}
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Dock Options</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          
+          {/* Fixed: Removed the nested structure that was causing issues */}
+          <ContextMenu>
+            <ContextMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </ContextMenuTrigger>
+            <ContextMenuContent className="w-48">
+              <ContextMenuItem
+                onClick={onBlockRequest}
+                disabled={status === "OCCUPIED"}
+                className="cursor-pointer flex items-center gap-2"
+              >
+                {isBlocked ? (
+                  <>
+                    <LockOpen className="h-4 w-4" />
+                    <span>Unblock Dock</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="h-4 w-4" />
+                    <span>Block Dock</span>
+                  </>
+                )}
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
         </div>
       </div>
       

@@ -39,8 +39,9 @@ export function DockDoorCard({
   const dockProductType = dock?.product_type;
   const dockVehicleTypes = dock?.vehicle_type_compatibility || [];
   
-  // Track blocked status
-  const [isBlocked, setIsBlocked] = useState(dockStatus === "UNDER_MAINTENANCE");
+  // Track blocked status and improve initialization
+  const isUnderMaintenance = dockStatus === "UNDER_MAINTENANCE";
+  const [isBlocked, setIsBlocked] = useState(isUnderMaintenance);
   const [isLoading, setIsLoading] = useState(false);
   
   const getDisplayName = () => {
@@ -49,7 +50,7 @@ export function DockDoorCard({
   
   const getStatusLabel = () => {
     if (isBlocked) return "Blocked";
-    return dockStatus;
+    return dockStatus === "UNDER_MAINTENANCE" ? "Blocked" : dockStatus;
   };
   
   const handleBlockRequest = async () => {
