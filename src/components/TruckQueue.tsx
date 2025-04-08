@@ -62,6 +62,8 @@ const mapSupabaseTruckToTruck: SupabaseTruckToTruck = (truck) => ({
   status: truck.dockdoor_assigned ? "Assigned" : "In Queue",
   assignedDock: truck.dockdoor_assigned || undefined,
   dockdoor_assigned: truck.dockdoor_assigned || undefined,
+  dockName: truck.dock_name || undefined,
+  dock_name: truck.dock_name || undefined,
   estimatedWaitTime: undefined,
   priority: "Medium" // Default priority
 });
@@ -267,7 +269,7 @@ export function TruckQueue({ trucks: initialTrucks }: TruckQueueProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>{getStatusBadge(truck.status)}</TableCell>
-                    <TableCell>{truck.assignedDock || "—"}</TableCell>
+                    <TableCell>{truck.dockName || "—"}</TableCell>
                   </TableRow>
                 ))
               )}
