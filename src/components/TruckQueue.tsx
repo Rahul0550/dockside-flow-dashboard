@@ -31,27 +31,37 @@ type SortField =
   | "cargoType"
   | "status";
 
-// Type mapping for Supabase to our local interfaces
+// Updated type mapping for Supabase to our local interfaces
 type SupabaseTruckToTruck = (truck: any) => Truck;
 
 const mapSupabaseTruckToTruck: SupabaseTruckToTruck = (truck) => ({
   id: truck.shipment_code || "",
   vehicleNumber: truck.vehicle_number || "",
+  vehicle_number: truck.vehicle_number || "",
   licensePlate: truck.vehicle_number || "", // Fallback to vehicle_number
   shipmentCode: truck.shipment_code || "",
+  shipment_code: truck.shipment_code || "",
   carrier: truck.transporter || "",
   driver: truck.driver_name || "",
+  driver_name: truck.driver_name || "",
   driverContact: truck.driver_contact || undefined,
+  driver_contact: truck.driver_contact || undefined,
   transporter: truck.transporter || undefined,
   cargoType: truck.cargo_types && truck.cargo_types.length > 0 ? truck.cargo_types[0] : "Normal",
+  cargo_types: truck.cargo_types || ["Normal"],
   quantity: truck.quantity || 0,
   arrivalTime: truck.eta || "",
   actualArrivalTime: truck.dock_in_time || undefined,
+  dock_in_time: truck.dock_in_time || undefined,
   appointmentTime: truck.appointment_time || undefined,
+  appointment_time: truck.appointment_time || undefined,
   estimatedArrivalTime: truck.eta || "",
+  eta: truck.eta || "",
   estimatedDockOutTime: truck.dock_out_time || undefined,
+  dock_out_time: truck.dock_out_time || undefined,
   status: truck.dockdoor_assigned ? "Assigned" : "In Queue",
   assignedDock: truck.dockdoor_assigned || undefined,
+  dockdoor_assigned: truck.dockdoor_assigned || undefined,
   estimatedWaitTime: undefined,
   priority: "Medium" // Default priority
 });

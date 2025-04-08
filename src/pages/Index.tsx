@@ -16,16 +16,19 @@ import { fetchDockDoors } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
-// Type mapping for Supabase to our local interfaces
+// Updated type mapping for Supabase to our local interfaces
 type SupabaseDockDoorToDockDoor = (dock: any) => DockDoor;
 
 const mapSupabaseDockToDockDoor: SupabaseDockDoorToDockDoor = (dock) => ({
   id: dock.dock_id || "",
-  name: dock.dock_name || "",
-  dock_name: dock.dock_name || "",  // Add this property to match what's being used
+  dock_id: dock.dock_id || "",
+  name: dock.dock_name || "", // Keep for backward compatibility
+  dock_name: dock.dock_name || "",
+  product_type: dock.product_type || null,
+  vehicle_type_compatibility: dock.vehicle_type_compatibility || [],
   status: (dock.status as DockStatus) || "Available",
   assignedTruck: dock.assigned_truck || undefined,
-  lastUpdated: dock.last_updated || "",
+  lastUpdated: dock.creation_timestamp || new Date().toISOString(),
   estimatedCompletion: dock.estimated_completion || undefined
 });
 

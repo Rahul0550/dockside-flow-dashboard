@@ -8,7 +8,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { BlockDockDialog } from "./BlockDockDialog";
-import { DockCardActions } from "./DockCardActions";
 import { DockCardHeader } from "./DockCardHeader";
 import { DockCardContent } from "./DockCardContent";
 import { DockCardFooter } from "./DockCardFooter";

@@ -2,34 +2,49 @@
 export type DockStatus = "Available" | "Occupied" | "Maintenance";
 export type CargoType = "Frozen" | "Normal" | "Mixed";
 
+// Updated to match dock_master table structure
 export interface DockDoor {
   id: string;
-  name: string;
-  dock_name?: string; // Add optional dock_name property
+  name?: string; // Keep for backward compatibility
+  dock_id?: string; 
+  dock_name: string;
+  product_type?: string | null;
+  vehicle_type_compatibility?: string[];
   status: DockStatus;
   assignedTruck?: string;
   lastUpdated: string;
   estimatedCompletion?: string;
 }
 
+// Updated to match shipment table structure
 export interface Truck {
   id: string;
   vehicleNumber: string;
+  vehicle_number?: string; // Added for consistency with new structure
   licensePlate: string;
   shipmentCode: string;
+  shipment_code?: string; // Added for consistency with new structure
   carrier: string;
   driver: string;
+  driver_name?: string; // Added for consistency with new structure
   driverContact?: string;
+  driver_contact?: string; // Added for consistency with new structure
   transporter?: string;
   cargoType: CargoType;
+  cargo_types?: string[]; // Added for consistency with new structure
   quantity: number;
   arrivalTime: string;
   actualArrivalTime?: string;
   appointmentTime?: string;
+  appointment_time?: string; // Added for consistency with new structure
   estimatedArrivalTime: string;
+  eta?: string; // Added for consistency with new structure
   estimatedDockOutTime?: string;
+  dock_out_time?: string; // Added for consistency with new structure
+  dock_in_time?: string; // Added for consistency with new structure
   status: "In Queue" | "Assigned" | "Completed";
   assignedDock?: string;
+  dockdoor_assigned?: string; // Added for consistency with new structure
   estimatedWaitTime?: string;
   priority: "Low" | "Medium" | "High";
 }
