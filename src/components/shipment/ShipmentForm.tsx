@@ -76,7 +76,10 @@ export function ShipmentForm({ onSuccess }: ShipmentFormProps) {
       
       await addShipment(shipmentData);
       
+      // Refresh all relevant data
       queryClient.invalidateQueries({ queryKey: ['truckQueue'] });
+      queryClient.invalidateQueries({ queryKey: ['trucks'] });
+      queryClient.invalidateQueries({ queryKey: ['dockDoors'] });
       
       toast({
         title: "Shipment Added",
