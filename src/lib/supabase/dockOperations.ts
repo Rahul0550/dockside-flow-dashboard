@@ -81,6 +81,34 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
 };
 
 /**
+ * Block or unblock a dock door
+ */
+export const blockDock = async (dockId: string, isBlocked: boolean) => {
+  try {
+    const status = isBlocked ? 'Maintenance' : 'Available';
+    
+    const { data, error } = await supabase
+      .from('dock_master')
+      .update({ status })
+      .eq('dock_id', dockId)
+      .select('*')
+      .single();
+    
+    if (error) {
+      console.error('Error updating dock status:', error);
+      throw new Error('Failed to update dock status');
+    }
+    
+    toast.success(`Dock ${data.dock_name} ${isBlocked ? 'blocked' : 'unblocked'} successfully`);
+    return data;
+  } catch (error) {
+    console.error('Error in blockDock:', error);
+    toast.error(`Failed to ${isBlocked ? 'block' : 'unblock'} dock`);
+    throw error;
+  }
+};
+
+/**
  * Update a dock door's information
  */
 export const updateDockDoor = async (

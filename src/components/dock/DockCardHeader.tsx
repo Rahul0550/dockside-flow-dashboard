@@ -5,7 +5,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import { MoreVertical } from "lucide-react";
 import { DockStatus } from "@/lib/data";
 
-interface DockCardHeaderProps {
+export interface DockCardHeaderProps {
   displayName: string;
   status: DockStatus;
   statusLabel: string;

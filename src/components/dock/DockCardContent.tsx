@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { DockDoor } from "@/lib/data";
 import { TruckIcon } from "lucide-react";
 
-interface DockCardContentProps {
+export interface DockCardContentProps {
   dock: DockDoor;
   isBlocked: boolean;
 }
