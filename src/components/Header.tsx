@@ -28,7 +28,7 @@ export function Header() {
                 </SheetTrigger>
                 <SheetContent side="left">
                   <nav className="flex flex-col gap-4 mt-8">
-                    <a href="#" className="text-lg font-medium">Settings</a>
+                    {/* Settings link has been removed */}
                   </nav>
                 </SheetContent>
               </Sheet>
@@ -38,7 +38,7 @@ export function Header() {
             
             {!isMobile && (
               <nav className="ml-8 flex items-center space-x-4">
-                <a href="#" className="text-sm text-muted-foreground">Settings</a>
+                {/* Settings link has been removed */}
               </nav>
             )}
           </div>
@@ -65,7 +65,7 @@ export function Header() {
               <MessageCircle className="h-5 w-5" />
               <span className="sr-only">Enable chatbot</span>
             </Button>
-            <Button variant="outline" size="sm">Refresh</Button>
+            {/* Refresh button has been removed */}
           </div>
         </div>
       </div>
