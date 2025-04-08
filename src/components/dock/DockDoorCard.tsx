@@ -7,14 +7,14 @@ import { Card } from "../ui/card";
 import { DockDoor } from "@/lib/data";
 
 export interface DockDoorCardProps {
-  id: string;
-  name: string;
-  status: "Available" | "Occupied" | "Maintenance";
+  id?: string;
+  name?: string;
+  status?: "Available" | "Occupied" | "Maintenance";
   assignedTruck?: string;
-  lastUpdated: string;
+  lastUpdated?: string;
   estimatedCompletion?: string;
   className?: string;
-  dock?: DockDoor; // Add the dock prop to support both legacy and new prop passing
+  dock?: DockDoor; // When dock is provided, the other props become optional
 }
 
 export function DockDoorCard({ 
@@ -28,11 +28,11 @@ export function DockDoorCard({
   dock
 }: DockDoorCardProps) {
   // If dock is provided, use its properties, otherwise use the direct props
-  const dockId = dock?.id || id;
-  const dockName = dock?.dock_name || name;
-  const dockStatus = dock?.status || status;
+  const dockId = dock?.id || id || "";
+  const dockName = dock?.dock_name || name || "";
+  const dockStatus = dock?.status || status || "Available";
   const dockAssignedTruck = dock?.assignedTruck || assignedTruck;
-  const dockLastUpdated = dock?.lastUpdated || lastUpdated;
+  const dockLastUpdated = dock?.lastUpdated || lastUpdated || new Date().toISOString();
   const dockEstimatedCompletion = dock?.estimatedCompletion || estimatedCompletion;
   
   // Track blocked status
