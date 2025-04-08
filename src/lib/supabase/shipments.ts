@@ -53,11 +53,10 @@ export const addShipment = async (shipment: ShipmentInsert) => {
 };
 
 /**
- * Fetches all shipments from the database with dock details
+ * Fetches all shipments from the database
  */
 export const fetchShipments = async () => {
-  // First, get all shipments
-  const { data: shipments, error } = await supabase
+  const { data, error } = await supabase
     .from('shipment')
     .select('*')
     .order('creation_timestamp', { ascending: false });
@@ -67,27 +66,5 @@ export const fetchShipments = async () => {
     throw new Error('Failed to fetch shipments');
   }
   
-  // For shipments with assigned docks, fetch the dock names
-  const shipmentsWithDockNames = await Promise.all(
-    shipments.map(async (shipment) => {
-      if (shipment.dockdoor_assigned) {
-        const { data: dock, error: dockError } = await supabase
-          .from('dock_master')
-          .select('dock_name')
-          .eq('dock_id', shipment.dockdoor_assigned)
-          .maybeSingle();
-        
-        if (dockError) {
-          console.error('Error fetching dock details:', dockError);
-          return { ...shipment, dock_name: null };
-        }
-        
-        return { ...shipment, dock_name: dock?.dock_name || null };
-      }
-      
-      return { ...shipment, dock_name: null };
-    })
-  );
-  
-  return shipmentsWithDockNames || [];
+  return data || [];
 };
