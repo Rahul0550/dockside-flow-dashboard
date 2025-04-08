@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -80,7 +79,6 @@ export function AddShipmentForm() {
   
   const onSubmit = async (data: FormValues) => {
     try {
-      // Check if shipment with this code already exists
       const shipmentExists = await checkShipmentExists(data.shipmentCode);
       if (shipmentExists) {
         toast({
@@ -91,7 +89,6 @@ export function AddShipmentForm() {
         return;
       }
       
-      // Check if vehicle exists, if not create it
       const vehicleExists = await checkVehicleExists(data.vehicleNumber);
       if (!vehicleExists) {
         await addVehicleMaster({
@@ -100,7 +97,6 @@ export function AddShipmentForm() {
         });
       }
       
-      // Create the shipment
       const shipmentData = {
         shipment_code: data.shipmentCode,
         vehicle_number: data.vehicleNumber,
@@ -115,7 +111,6 @@ export function AddShipmentForm() {
       
       await addShipment(shipmentData);
       
-      // Refresh the truck queue data
       queryClient.invalidateQueries({ queryKey: ['truckQueue'] });
       
       toast({
@@ -123,7 +118,6 @@ export function AddShipmentForm() {
         description: `Shipment ${data.shipmentCode} has been added successfully.`,
       });
       
-      // Close the dialog and reset form
       setOpen(false);
       form.reset();
       setSelectedCargoTypes([]);
