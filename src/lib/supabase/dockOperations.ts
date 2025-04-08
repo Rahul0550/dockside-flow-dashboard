@@ -10,7 +10,7 @@ export const dockInVehicle = async (dockId: string, shipmentCode: string) => {
     // Update the dock status to Occupied
     const dockUpdate = await supabase
       .from('dock_master')
-      .update({ status: 'Occupied' })
+      .update({ status: 'OCCUPIED' })
       .eq('dock_id', dockId);
     
     if (dockUpdate.error) {
@@ -49,7 +49,7 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
     // Update the dock status to Available
     const dockUpdate = await supabase
       .from('dock_master')
-      .update({ status: 'Available' })
+      .update({ status: 'AVAILABLE' })
       .eq('dock_id', dockId);
     
     if (dockUpdate.error) {
@@ -85,7 +85,7 @@ export const dockOutVehicle = async (dockId: string, shipmentCode: string) => {
  */
 export const blockDock = async (dockId: string, isBlocked: boolean) => {
   try {
-    const status = isBlocked ? 'Maintenance' : 'Available';
+    const status = isBlocked ? 'UNDER_MAINTENANCE' : 'AVAILABLE';
     
     const { data, error } = await supabase
       .from('dock_master')
