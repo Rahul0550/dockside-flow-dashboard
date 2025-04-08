@@ -13,10 +13,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format, formatDistanceToNow } from "date-fns";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchTrucks } from "@/lib/supabase";
 
 interface TruckQueueProps {
-  trucks: Truck[];
+  trucks?: Truck[];
 }
 
 type SortField = 
@@ -29,10 +31,18 @@ type SortField =
   | "cargoType"
   | "status";
 
-export function TruckQueue({ trucks }: TruckQueueProps) {
+export function TruckQueue({ trucks: initialTrucks }: TruckQueueProps) {
   const [sortField, setSortField] = useState<SortField>("estimatedArrivalTime");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Fetch trucks from Supabase if not provided as props
+  const { data: trucks, isLoading, isError } = useQuery({
+    queryKey: ['trucks'],
+    queryFn: fetchTrucks,
+    initialData: initialTrucks,
+    enabled: !initialTrucks
+  });
   
   // Handle sorting
   const handleSort = (field: SortField) => {
@@ -43,6 +53,26 @@ export function TruckQueue({ trucks }: TruckQueueProps) {
       setSortDirection("asc");
     }
   };
+  
+  if (isLoading) {
+    return (
+      <Card className="h-full">
+        <CardContent className="pt-6 flex items-center justify-center h-[300px]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  if (isError || !trucks) {
+    return (
+      <Card className="h-full">
+        <CardContent className="pt-6 flex items-center justify-center h-[300px]">
+          <p className="text-muted-foreground">Error loading truck data</p>
+        </CardContent>
+      </Card>
+    );
+  }
   
   // Filter and sort trucks
   const filteredAndSortedTrucks = [...trucks]

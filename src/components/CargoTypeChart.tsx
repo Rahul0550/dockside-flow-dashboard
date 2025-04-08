@@ -9,9 +9,12 @@ import {
   Tooltip, 
   Legend 
 } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCargoTypeData } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
 
 interface CargoTypeChartProps {
-  data: CargoTypeData[];
+  data?: CargoTypeData[];
 }
 
 // Define colors for different cargo types
@@ -21,7 +24,41 @@ const CARGO_COLORS = {
   "Mixed": "#8b5cf6"   // Purple
 };
 
-export function CargoTypeChart({ data }: CargoTypeChartProps) {
+export function CargoTypeChart({ data: initialData }: CargoTypeChartProps) {
+  // If data is provided, use it; otherwise fetch from Supabase
+  const { data: cargoData, isLoading, isError } = useQuery({
+    queryKey: ['cargoTypeData'],
+    queryFn: fetchCargoTypeData,
+    initialData: initialData,
+    enabled: !initialData
+  });
+  
+  if (isLoading) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Cargo Type Distribution</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-[300px]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  if (isError || !cargoData || cargoData.length === 0) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Cargo Type Distribution</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-[300px]">
+          <p className="text-muted-foreground">No cargo data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
     <Card className="h-full">
       <CardHeader>
@@ -32,7 +69,7 @@ export function CargoTypeChart({ data }: CargoTypeChartProps) {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={data}
+                data={cargoData}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -41,7 +78,7 @@ export function CargoTypeChart({ data }: CargoTypeChartProps) {
                 dataKey="value"
                 nameKey="name"
               >
-                {data.map((entry, index) => (
+                {cargoData.map((entry, index) => (
                   <Cell 
                     key={`cell-${index}`} 
                     fill={CARGO_COLORS[entry.name] || "#ccc"} 
